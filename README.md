@@ -11,6 +11,7 @@ and phase retrieval algorithm for a senior design project
  * Interface with camera and arduino
 
 ### To Do: ###
+
  * Generate mock data
  * develop phase retrieval algorithm
  * ~~Control LED matrix~~
@@ -20,6 +21,12 @@ and phase retrieval algorithm for a senior design project
  * Interface with arduino
 
 # Getting Started with Git #
+
+Both [Atlassian](https://www.atlassian.com/git/tutorials/what-is-version-control) 
+and [git](https://git-scm.com/book/en/v2) 
+have fairly detailed reference materials available, 
+and there are scores of other tutorials around the web.
+Below is a highly-abridged guide.
 
 ### Install git ###
 
@@ -111,4 +118,5 @@ Command                     | Function
 `git pull --rebase`         | Fetch new changes from remote repository
 `git push`                  | Push local commits to remote repository
 
-See also `git help <command>`
+See also `git help <command>` and 
+[this cheat sheet](https://services.github.com/kit/downloads/github-git-cheat-sheet.pdf). 
