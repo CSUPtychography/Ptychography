@@ -28,6 +28,9 @@ have fairly detailed reference materials available,
 and there are scores of other tutorials around the web.
 Below is a highly-abridged guide.
 
+All of the commands below can be entered on the windows command line, or in git bash.
+They can also be used in matlab if preceded by `!`.
+
 ### Install git ###
 
 Go [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
@@ -125,6 +128,8 @@ A new commit will be created on the current branch.
  * [Lots more tools](https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection)
 
 ## Command Reference ##
+
+These commands can be used in the matlab command line by preceding them with `!`.
 
 Command                     | Function
 ----------------------------|----------
