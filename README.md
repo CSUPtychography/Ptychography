@@ -65,6 +65,12 @@ and the exact changes made can be seen with `git diff` or `git diff --staged`.
 Once changes have been staged, they can be committed to the local repository
 with `git commit`.
 **Be sure to specify a [good commit message](http://chris.beams.io/posts/git-commit/).**
+Try to make 
+[atomic commits](https://seesparkbox.com/foundry/atomic_commits_with_git)
+as much as possible. 
+It is possible to commit only some changes in a file using `git add -p`
+if the changes are unrelated. 
+See the link on atomic commits above for details. 
 
 ### Push the changes ###
 
