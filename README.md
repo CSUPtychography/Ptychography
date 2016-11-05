@@ -113,7 +113,7 @@ To switch to a branch use `git checkout <branch>`.
 The 'main' or default branch is called `master`.
 A list of all branches and the current branch can be seen with `git branch`.
 To push a branch's commits to a remote repository, use `git push <branch>`
-Right after a branch has been created, `git push -u <branch>` must be used
+Right after a branch has been created, `git push -u origin <branch>` must be used
 to create a branch in the remote repo, and set the upstream reference.
 [More info here](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging).
 
