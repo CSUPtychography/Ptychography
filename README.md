@@ -130,6 +130,7 @@ A new commit will be created on the current branch.
 ## Command Reference ##
 
 These commands can be used in the matlab command line by preceding them with `!`.
+(e.g. `!git diff`)
 
 Command                     | Function
 ----------------------------|----------
