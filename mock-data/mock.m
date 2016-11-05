@@ -10,7 +10,9 @@ mag = imread(magnitude_file);
 phase = imread(phase_file);
 
 % check size and squareness
-% todo
+if size(mag) ~= size(phase)
+    error('Images are not the same size');
+end % if
 
 % normalize between 0 and 1 for magnitude,
 %   and -0.5 to 0.5 for phase
