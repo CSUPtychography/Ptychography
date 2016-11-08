@@ -7,7 +7,7 @@ function [blur] = ImageMock(magnitude_file,phase_file,r,a,b)
 % a is the x coordinate of the location you'd like to have as the output
 % b is the y coordinate of the location you'd like to have as the output
 % try the following: 
-%       ImageMock('cameraman.png','lena.png',32,1,1);
+%       ImageMock('cameraman.png','lena.png',32,16,16);
 %% create mock data to test phase retrieval algorithm and ptychography Algorithm
 
 %% Import image data
@@ -28,7 +28,7 @@ I = mag2 .* exp(1i * 2 * pi * phase2);
 % conserve memory ('cause we're gonna need it)
 %% small image construction
 % perform FFT on I
-IF = fft2(I);
+IF = fftshift(fft2(fftshift(I)));
 % preparing variables for transfer function
 k = r+1;
 [m,n] = size(mag);
@@ -58,7 +58,7 @@ AC = A(A~=0);
 %reshape after trimming zeros
 ACR = reshape(AC,2*r,2*r);
 %perform ifft2 on fewer pixels to show fft
-blur = abs(ifft2(ACR));
+blur = abs(fftshift(ifft2(fftshift(ACR))));
 %display image
 figure ()
 image(blur)
