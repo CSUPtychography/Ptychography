@@ -1,92 +1,34 @@
-% clear all;
-% %% create mock data to test phase retrieval algorithm
-% 
-% %% parameters
-magnitude_file = 'cameraman.png';
-phase_file = 'lena.png';
-% r = 16;
-% 
-% %% Import image data
-% 
-% mag = imread(magnitude_file);
-% phase = imread(phase_file);
-% % check size and squareness
-% if size(mag) ~= size(phase)
-%     error('Images are not the same size');
-% end
-% 
-% % normalize between 0 and 1 for magnitude,
-% %   and -0.5 to 0.5 for phase
-% mag2 = double(mag) / 255;
-% phase2 = double(phase) / 255 - 0.5;
-% 
-% % pack into single phase image
-% I = mag2 .* exp(1i * 2 * pi * phase2);
-% 
-% % conserve memory ('cause we're gonna need it)
-% %% small image construction
-% % perform FFT on I
-% IF = fft2(I);
-% 
-% % Create Transfer Function
-% k = r+1;
-% TF = zeros(size(mag));
-% [m,n] = size(mag);
-% Images = cell(size(mag)/r);
-% imagesX=1;
-% while(k < m);
-% j=r+1;
-% imagesY=1;
-%     while (j < n);
-%     TF(k-r:k+r-1,j-r:j+r-1) = 255;
-%     Images{imagesX,imagesY} = TF.*IF;
-%     imagesY = imagesY+1;
-%     j = j+r;
-%     TF = zeros(size(mag));
-%     end
-% imagesX=imagesX+1;
-% k=k+r;
-% end
-% %% to be done with each segment
-% A = Images{2,2};
-% %trim each image
-% AC = A(A~=0);
-% %reshape each after trimming
-% ACR = reshape(AC,2*r,2*r);
-% %perform ifft2
-% blur = abs(ifft2(ACR));
-% %display image
-% figure ()
-% image(blur)
-% colormap(gray(256));
-% % problem here: will need to make this a circle instead of a rectangle,
-% % CIRCLE = insertShape(blank,'filled circle',[128 128 8]);   ?
-% % moving on...
-% 
-% % Measure Intensity
-% 
-% % Save small image in cell array
-
-% This function can be used to take any two images, and create images with
-% less resolution, to act as mock data.
+%% create mock data to test phase retrieval algorithm
+% This script takes any two images, and creates sub-images with
+% less resolution, to act as mock data for ptychography
 % magnitude_file is the file you'd like to act as the magnitude
 % phase_file is the file you'd like to act as the phase
 % r is the radius you'd like to use for the transfer function
-% a is the x coordinate of the location you'd like to have as the output
-% b is the y coordinate of the location you'd like to have as the output
-% try the following: 
-%       ImageMock('cameraman.png','lena.png',32,16,16);
-%% create mock data to test phase retrieval algorithm and ptychography Algorithm
+% a and b are the coordinates of the subimage to display
+
+%% parameters
+magnitude_file = 'cameraman.png';
+phase_file = 'lena.png';
+
+r = 64;
+
+a = 2;
+b = 2;
 
 %% Import image data
 
 mag = imread(magnitude_file);
 phase = imread(phase_file);
-% check size and squareness
+
+% check size
 if size(mag) ~= size(phase)
     error('Images are not the same size');
 end
+
+% check squareness (?)
+
 %% Prepare imported data
+
 % normalize between 0 and 1 for magnitude,
 % and -0.5 to 0.5 for phase
 mag2 = double(mag) / 255;
@@ -95,24 +37,26 @@ phase2 = double(phase) / 255 - 0.5;
 % pack into single phase image
 I = mag2 .* exp(1i * 2 * pi * phase2);
 
-%% small image construction
+%% sub image construction
 
 % perform FFT on I
 IF = fftshift(fft2(fftshift(I)));
 
 % preparing variables for transfer function
-k = r;
-[m,n] = size(I);
-[X,Y] = meshgrid(1:n,1:m);
-Images = cell(floor([m,n] / r - 1));
-imagesX=1;
+k = r;                                  % initial k_x coordinate
+[m,n] = size(I);                        % size variables
+[X,Y] = meshgrid(1:n,1:m);              % grid of coordinates
+Images = cell(floor([m,n] / r - 1));    % initialize cell array
+imagesX=1;                              % initial image index
+
 while(k < m);
-    j=r;
-    imagesY=1;
+    j=r;                % initial k_y coordinate
+    imagesY=1;          % initial image index
     while (j < n);
         % preparing transfer function
+        % it's a circle of radius r with center (k,j)
         OTF = (sqrt((X - k).^2 + (Y - j).^2) < r);
-        OTF(k-r+1:k+r,j-r+1:j+r) = 255;
+        OTF(k-r+1:k+r, j-r+1:j+r) = 255;
         % multiply transfer function by FFt'd image
         blurred = OTF .* IF;
         % crop out region of interest
@@ -124,21 +68,17 @@ while(k < m);
         % store in cell array
         Images{imagesX,imagesY} = sub_image;
 
-        % counting through the image
-        imagesY = imagesY+1;
-        j = j+r;
+        imagesY = imagesY+1;    % increment image index
+        j = j+r;                % move center of circle
     end % while
-    imagesX=imagesX+1;
-    k=k+r;
-end
-%% to be done with each segment
+    imagesX=imagesX+1;      % increment image index
+    k=k+r;                  % move center of circle
+end % while
+
 A = Images{a,b};
 
-%display image
-% figure ()
+% display image
+figure(1)
 image(A)
 colormap gray;
-% problem here: will need to make this a circle instead of a rectangle
-% possible solution to the transfer function:
-% CIRCLE = insertShape(blank,'filled circle',[128 128 8]);
-
+title(sprintf('Subimage (%d,%d)',a,b));
