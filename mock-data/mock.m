@@ -55,10 +55,10 @@ while(k < m);
     while (j < n);
         % preparing transfer function
         % it's a circle of radius r with center (k,j)
-        OTF = (sqrt((X - k).^2 + (Y - j).^2) < r);
-        OTF(k-r+1:k+r, j-r+1:j+r) = 255;
+        CTF = (sqrt((X - k).^2 + (Y - j).^2) < r);
+        CTF(k-r+1:k+r, j-r+1:j+r) = 255;
         % multiply transfer function by FFt'd image
-        blurred = OTF .* IF;
+        blurred = CTF .* IF;
         % crop out region of interest
         blurred = blurred(k-r+1:k+r, j-r+1:j+r);
         % inverse fourier transform
