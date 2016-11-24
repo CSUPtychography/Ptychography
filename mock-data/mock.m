@@ -10,10 +10,15 @@
 magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
 
-r = 64;
+r = 64;     % CTF radius in pixels
 
+% coordinates of image to display
 a = 2;
 b = 2;
+
+% distance between sub-images in k-space in pixels
+% this will later be determined by LED spacing, distance, and other things
+delta_k_px = r;
 
 %% Import image data
 
@@ -43,24 +48,24 @@ I = mag2 .* exp(1i * 2 * pi * phase2);
 IF = fftshift(fft2(fftshift(I)));
 
 % preparing variables for transfer function
-k = r;                                  % initial k_x coordinate
+k_x = r;                                % initial k_x coordinate
 [m,n] = size(I);                        % size variables
 [X,Y] = meshgrid(1:n,1:m);              % grid of coordinates
 Images = cell(floor([m,n] / r - 1));    % initialize cell array
-imagesX=1;                              % initial image index
+imagesX = 1;                            % initial image index
 
 while(k < m);
-    j=r;                % initial k_y coordinate
-    imagesY=1;          % initial image index
-    while (j < n);
+    k_y = r;            % initial k_y coordinate
+    imagesY = 1;        % initial image index
+    while (k_y < n);
         % preparing transfer function
-        % it's a circle of radius r with center (k,j)
-        CTF = (sqrt((X - k).^2 + (Y - j).^2) < r);
-        CTF(k-r+1:k+r, j-r+1:j+r) = 255;
+        % it's a circle of radius r with center (k_x,k_y)
+        CTF = (sqrt((X - k_x).^2 + (Y - k_y).^2) < r);
+        CTF(k_x-r+1:k_x+r, k_y-r+1:k_y+r) = 255;
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
         % crop out region of interest
-        blurred = blurred(k-r+1:k+r, j-r+1:j+r);
+        blurred = blurred(k_x-r+1:k_x+r, k_y-r+1:k_y+r);
         % inverse fourier transform
         sub_image = fftshift(ifft2(fftshift(blurred)));
         % measure intensity
@@ -68,11 +73,11 @@ while(k < m);
         % store in cell array
         Images{imagesX,imagesY} = sub_image;
 
-        imagesY = imagesY+1;    % increment image index
-        j = j+r;                % move center of circle
+        imagesY = imagesY+1;        % increment image index
+        k_y = k_y + delta_k_px;     % move center of circle
     end % while
-    imagesX=imagesX+1;      % increment image index
-    k=k+r;                  % move center of circle
+    imagesX=imagesX+1;          % increment image index
+    k_x = k_x + delta_k_px;     % move center of circle
 end % while
 
 A = Images{a,b};
