@@ -64,13 +64,13 @@ while(k_x <= m - r);
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
         % crop out region of interest
-        blurred = blurred(k_x-r+1:k_x+r, k_y-r+1:k_y+r);
+        blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
         % inverse fourier transform
         sub_image = fftshift(ifft2(fftshift(blurred)));
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
-        Images{imagesX,imagesY} = sub_image;
+        Images{imagesY,imagesX} = sub_image;
 
         imagesY = imagesY+1;        % increment image index
         k_y = k_y + delta_k_px;     % move center of circle
