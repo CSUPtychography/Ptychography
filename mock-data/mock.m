@@ -61,7 +61,6 @@ while(k_x <= m - r);
         % preparing transfer function
         % it's a circle of radius r with center (k_x,k_y)
         CTF = (sqrt((X - k_x).^2 + (Y - k_y).^2) < r);
-        CTF(k_x-r+1:k_x+r, k_y-r+1:k_y+r) = 255;
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
         % crop out region of interest
