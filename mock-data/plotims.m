@@ -5,8 +5,8 @@ Nj = size(images,2);
 
 for i = 1:Ni
     for j = 1:Nj
-        subplot(Ni,Nj,j+3*(i-1));
-        imagesc(log(abs(images{i,j})))
+        subplot(Ni,Nj,j+Ni*(i-1));
+        imagesc(abs(images{i,j}))
         title(sprintf('image %d, %d',i,j))
         axis image;
     end %for
