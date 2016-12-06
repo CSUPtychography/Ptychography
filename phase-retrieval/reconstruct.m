@@ -6,12 +6,12 @@
 
 filename = '../mock-data/mockim_r64_dk64.mat';
 
-r = 64;             % CTF radius in pixels
-delta_k = r;        % space between adjacent images in pixels
+r = 64;                     % CTF radius in pixels
+delta_k = r;                % space between adjacent images in pixels
 
-object_size = 256;  % final object size in pixels
+object_size = [256 256];    % final object size in pixels
 
-iterations = 1;     % number of iterations
+iterations = 1;             % number of iterations
 
 %% import images and other data (?)
 
@@ -19,4 +19,18 @@ import = load(filename);
 
 Images = import.Images;
 arraysize = size(Images);
+
+%% retrieve phase iteratively
+
+% initialize object
+object = zeros(object_size);
+objectFT = fftshift(fft2(object));
+
+for iter = 1:iterations         % one per iteration
+    for i = 1:arraysize         % one per row of LEDs
+        for j = 1:arraysize     % one per column of LEDs
+            
+        end % column for
+    end % row for
+end % iteration for
 
