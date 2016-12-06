@@ -20,6 +20,8 @@ b = 2;
 % this will later be determined by LED spacing, distance, and other things
 delta_k_px = r;
 
+filename = sprintf('mockim_r%d_dk%d',r,delta_k_px);
+
 %% Import image data
 
 mag = imread(magnitude_file);
@@ -79,10 +81,12 @@ while(k_x <= m - r);
     k_x = k_x + delta_k_px;     % move center of circle
 end % while
 
-A = Images{a,b};
+%% display image
 
-% display image
 figure(1)
-image(A)
+image(Images{a,b})
 colormap gray;
 title(sprintf('Subimage (%d,%d)',a,b));
+
+%% save images
+save(filename,'Images');
