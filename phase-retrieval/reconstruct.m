@@ -25,11 +25,19 @@ arraysize = size(Images);
 % initialize object
 object = zeros(object_size);
 objectFT = fftshift(fft2(object));
+% interpolate on-axis image maybe?  
 
 for iter = 1:iterations         % one per iteration
     for i = 1:arraysize         % one per row of LEDs
         for j = 1:arraysize     % one per column of LEDs
+            % extract piece of spectrum
             
+            % FFT
+
+            % Replace intensity
+
+            % put it back
+
         end % column for
     end % row for
 end % iteration for
