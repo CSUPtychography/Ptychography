@@ -28,6 +28,7 @@ objectFT = fftshift(fft2(object));
 % interpolate on-axis image maybe?  
 
 % create list of k vectors
+% todo: center the grid on zero
 k_x = r:delta_k:object_size(1) - r;
 k_y = r:delta_k:object_size(2) - r;
 
@@ -42,10 +43,12 @@ for iter = 1:iterations         % one per iteration
             pieceFT = objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r);
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % iFFT
+            % may need a scale factor here due to size difference
             piece = ifft2(ifftshift(pieceFT_constrained));
             % Replace intensity
             piece_replaced = Images{i,j} .* exp(1i * angle(piece));
             % FFT
+            % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
             objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r) = ...
