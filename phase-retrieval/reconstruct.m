@@ -29,8 +29,8 @@ objectFT = fftshift(fft2(object));
 
 % create list of k vectors
 % todo: center the grid on zero
-k_x = r:delta_k:object_size(1) - r;
-k_y = r:delta_k:object_size(2) - r;
+k_x = r:delta_k:object_size(2) - r;
+k_y = r:delta_k:object_size(1) - r;
 
 % prepare CTF (circle of radius r)
 [X,Y] = meshgrid(-r:r);

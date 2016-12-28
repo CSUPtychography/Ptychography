@@ -56,10 +56,10 @@ k_x = r;                                % initial k_x coordinate
 Images = cell(floor([m,n] / r - 1));    % initialize cell array
 imagesX = 1;                            % initial image index
 
-while(k_x <= m - r);
+while(k_x <= n - r);
     k_y = r;            % initial k_y coordinate
     imagesY = 1;        % initial image index
-    while (k_y <= n - r);
+    while (k_y <= m - r);
         % preparing transfer function
         % it's a circle of radius r with center (k_x,k_y)
         CTF = (sqrt((X - k_x).^2 + (Y - k_y).^2) < r);
