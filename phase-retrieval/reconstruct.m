@@ -23,7 +23,7 @@ arraysize = size(Images);
 %% retrieve phase iteratively
 
 % initialize object
-object = zeros(object_size);
+object = complex(zeros(object_size));
 objectFT = fftshift(fft2(object));
 % interpolate on-axis image maybe?  
 
