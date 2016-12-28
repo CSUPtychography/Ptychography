@@ -18,7 +18,7 @@ iterations = 1;             % number of iterations
 import = load(filename);
 
 Images = import.Images;
-arraysize = size(Images);
+array_size = size(Images);
 
 %% retrieve phase iteratively
 
@@ -28,8 +28,8 @@ objectFT = fftshift(fft2(object));
 % interpolate on-axis image maybe?  
 
 for iter = 1:iterations         % one per iteration
-    for i = 1:arraysize         % one per row of LEDs
-        for j = 1:arraysize     % one per column of LEDs
+    for i = 1:array_size        % one per row of LEDs
+        for j = 1:array_size    % one per column of LEDs
             % extract piece of spectrum
             
             % FFT
