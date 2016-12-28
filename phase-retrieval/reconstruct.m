@@ -41,10 +41,12 @@ for iter = 1:iterations         % one per iteration
             % extract piece of spectrum
             pieceFT = objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r);
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
-            % FFT
-
+            % iFFT
+            piece = ifft2(ifftshift(pieceFT_constrained));
             % Replace intensity
-
+            piece_replaced = Images{i,j} .* exp(1i * angle(piece));
+            % FFT
+            piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
 
         end % column for
