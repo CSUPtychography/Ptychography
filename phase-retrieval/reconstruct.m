@@ -31,16 +31,16 @@ objectFT = fftshift(fft2(object));
 k_x = r:delta_k:object_size(1) - r;
 k_y = r:delta_k:object_size(2) - r;
 
-% grid of indices
-[X,Y] = meshgrid(1:object_size(1),1:object_size(2));
+% prepare CTF (circle of radius r)
+[X,Y] = meshgrid(-r:r);
+CTF = X.^2 + Y.^2 < r^2;
 
 for iter = 1:iterations         % one per iteration
     for i = 1:array_size        % one per row of LEDs
         for j = 1:array_size    % one per column of LEDs
-            % prepare CTF (circle radius R center (k_x,k_y))
-            CTF = ((X - k_x(i)).^2 + (Y - k_y(j)).^2 < r^2);
             % extract piece of spectrum
-            
+            pieceFT = objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r);
+            pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % FFT
 
             % Replace intensity
