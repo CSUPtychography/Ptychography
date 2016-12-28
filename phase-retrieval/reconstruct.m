@@ -48,8 +48,8 @@ for iter = 1:iterations         % one per iteration
             % FFT
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
-
+            objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r) = ...
+                piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
         end % column for
     end % row for
 end % iteration for
-
