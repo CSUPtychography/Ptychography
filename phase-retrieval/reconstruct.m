@@ -70,3 +70,20 @@ for iter = 1:iterations         % one per iteration
         end % column for
     end % row for
 end % iteration for
+
+%% compute & display reconstructed object
+
+% compute
+object = ifft2(ifftshift(objectFT));
+% display
+subplot(1,2,1);
+imagesc(abs(object));
+axis image;
+colormap gray;
+title('Reconstructed Object Amplitude');
+
+subplot(1,2,2);
+imagesc(angle(object));
+axis image;
+colormap gray;
+title('Reconstructed Object Phase');
