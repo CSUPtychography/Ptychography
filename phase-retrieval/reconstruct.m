@@ -50,7 +50,7 @@ for iter = 1:iterations         % one per iteration
             % may need a scale factor here due to size difference
             piece = ifft2(ifftshift(pieceFT_constrained));
             % Replace intensity
-            piece_replaced = Images{i,j} .* exp(1i * angle(piece));
+            piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % FFT
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
