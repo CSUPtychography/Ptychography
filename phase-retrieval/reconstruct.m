@@ -36,6 +36,10 @@ k_y = r:delta_k:object_size(1) - r;
 [X,Y] = meshgrid(-r:r);
 CTF = X.^2 + Y.^2 < r^2;
 
+% setup figure
+subplot(1,2,1); colormap gray;
+subplot(1,2,2); colormap gray;
+
 for iter = 1:iterations         % one per iteration
     for i = 1:array_size        % one per row of LEDs
         for j = 1:array_size    % one per column of LEDs
@@ -53,6 +57,15 @@ for iter = 1:iterations         % one per iteration
             % put it back
             objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
+            % display thingas
+            subplot(1,2,1);
+            imagesc(Images{i,j});
+            axis image;
+            title('sub-image');
+            subplot(1,2,2);
+            imagesc(abs(objectFT));
+            axis image;
+            title('object Fourier Transform');
         end % column for
     end % row for
 end % iteration for
