@@ -63,9 +63,10 @@ for iter = 1:iterations         % one per iteration
             axis image;
             title('sub-image');
             subplot(1,2,2);
-            imagesc(abs(objectFT));
+            imagesc(angle(objectFT));
             axis image;
             title('object Fourier Transform');
+            drawnow;
         end % column for
     end % row for
 end % iteration for
