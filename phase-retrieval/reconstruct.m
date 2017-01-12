@@ -33,7 +33,7 @@ k_x = r:delta_k:object_size(2) - r;
 k_y = r:delta_k:object_size(1) - r;
 
 % prepare CTF (circle of radius r)
-[X,Y] = meshgrid(-r:r);
+[X,Y] = meshgrid(-r+1:r);
 CTF = X.^2 + Y.^2 < r^2;
 
 % setup figure
@@ -44,7 +44,7 @@ for iter = 1:iterations         % one per iteration
     for i = 1:array_size        % one per row of LEDs
         for j = 1:array_size    % one per column of LEDs
             % extract piece of spectrum
-            pieceFT = objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r);
+            pieceFT = objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r);
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % iFFT
             % may need a scale factor here due to size difference
@@ -55,7 +55,7 @@ for iter = 1:iterations         % one per iteration
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
-            objectFT(k_x(i)-r:k_x(i)+r,k_y(j)-r:k_y(j)+r) = ...
+            objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
             % display thingas
             subplot(1,2,1);
