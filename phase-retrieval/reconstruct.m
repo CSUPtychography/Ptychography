@@ -37,8 +37,10 @@ k_y = r:delta_k:object_size(1) - r;
 CTF = X.^2 + Y.^2 < r^2;
 
 % setup figure
-subplot(1,2,1); colormap gray;
-subplot(1,2,2); colormap gray;
+figure(1);
+subplot(1,2,1);
+subplot(1,2,2);
+colormap gray;
 
 for iter = 1:iterations         % one per iteration
     for i = 1:array_size        % one per row of LEDs
@@ -76,10 +78,10 @@ end % iteration for
 % compute
 object = ifft2(ifftshift(objectFT));
 % display
+figure(1)
 subplot(1,2,1);
 imagesc(abs(object));
 axis image;
-colormap gray;
 title('Reconstructed Object Amplitude');
 
 subplot(1,2,2);
