@@ -11,7 +11,7 @@ delta_k = r;                % space between adjacent images in pixels
 
 object_size = [256 256];    % final object size in pixels
 
-iterations = 10;            % number of iterations
+iterations = 5;             % number of iterations
 
 %% import images and other data (?)
 
