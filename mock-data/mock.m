@@ -47,7 +47,7 @@ I = mag2 .* exp(1i * 2 * pi * phase2);
 %% sub image construction
 
 % perform FFT on I
-IF = fftshift(fft2(fftshift(I)));
+IF = fftshift(fft2(I));
 
 % preparing variables for transfer function
 k_x = r;                                % initial k_x coordinate
@@ -68,7 +68,7 @@ while(k_x <= n - r);
         % crop out region of interest
         blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
         % inverse fourier transform
-        sub_image = fftshift(ifft2(fftshift(blurred)));
+        sub_image =(ifft2(ifftshift(blurred));
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
