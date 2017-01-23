@@ -11,6 +11,7 @@ magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
 
 r = 64;     % CTF radius in pixels
+weak_phase = true;
 
 % coordinates of image to display
 a = 2;
@@ -20,7 +21,17 @@ b = 2;
 % this will later be determined by LED spacing, distance, and other things
 delta_k_px = r;
 
-filename = sprintf('mockim_r%d_dk%d',r,delta_k_px);
+% string with parameters for filename
+if weak_phase
+    paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
+else
+    paramstr = sprintf('r%d_dk%d',r,delta_k_px);
+end % weak phase if
+
+% add magnitude and phase source indicators
+paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
+
+filename = strcat('mockim_', paramstr);
 
 %% Import and normalize image data
 
