@@ -22,10 +22,10 @@ delta_k_px = r;
 
 filename = sprintf('mockim_r%d_dk%d',r,delta_k_px);
 
-%% Import image data
+%% Import and normalize image data
 
-mag = imread(magnitude_file);
-phase = imread(phase_file);
+mag = normgray(imread(magnitude_file));
+phase = normgray(imread(phase_file));
 
 % check size
 if size(mag) ~= size(phase)
@@ -34,15 +34,9 @@ end
 
 % check squareness (?)
 
-%% Prepare imported data
+%% Generate Phase Object
 
-% normalize between 0 and 1 for magnitude,
-% and -0.5 to 0.5 for phase
-mag2 = double(mag) / 255;
-phase2 = double(phase) / 255 - 0.5;
-
-% pack into single phase image
-I = mag2 .* exp(1i * 2 * pi * phase2);
+I = mag .* exp(1i * 2 * pi * (phase - 0.5));
 
 %% sub image construction
 
