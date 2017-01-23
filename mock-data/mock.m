@@ -12,6 +12,7 @@ phase_file = 'lena.png';
 
 r = 64;     % CTF radius in pixels
 weak_phase = true;
+weak_phase_factor = 0.5;
 
 % coordinates of image to display
 a = 2;
@@ -21,11 +22,14 @@ b = 2;
 % this will later be determined by LED spacing, distance, and other things
 delta_k_px = r;
 
-% string with parameters for filename
+% handle weak phase
 if weak_phase
+    % string with parameters for filename
     paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
+    phase_factor = weak_phase_factor;
 else
     paramstr = sprintf('r%d_dk%d',r,delta_k_px);
+    phase_factor = 1;
 end % weak phase if
 
 % add magnitude and phase source indicators
@@ -47,7 +51,7 @@ end
 
 %% Generate Phase Object
 
-I = mag .* exp(1i * 2 * pi * (phase - 0.5));
+I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
 
 %% sub image construction
 
