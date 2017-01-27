@@ -55,7 +55,7 @@ for iter = 1:iterations         % one per iteration
             % may need a scale factor here due to size difference
             piece = ifft2(ifftshift(pieceFT_constrained));
             % crop to fix zero-padding
-            piece = piece(pad_px:end-pad_px, pad_px:end-pad_px);
+            piece = piece(pad_px+1:end-pad_px, pad_px+1:end-pad_px);
             % Replace intensity
             piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % zero pad again (this is so hacky)
@@ -64,7 +64,7 @@ for iter = 1:iterations         % one per iteration
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % resize
-            piece_replacedFT = piece_replacedFT(pad_px:end-pad_px, pad_px:end-pad_px); % gross
+            piece_replacedFT = piece_replacedFT(pad_px+1:end-pad_px, pad_px+1:end-pad_px); % gross
             % put it back
             objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
