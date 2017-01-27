@@ -10,9 +10,10 @@
 magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
 
-r = 64;     % CTF radius in pixels
+r = 64;         % CTF radius in pixels
 weak_phase = true;
 weak_phase_factor = 0.5;
+pad_px = 10;    % number of pixels to zero-pad
 
 % coordinates of image to display
 a = 2;
@@ -76,8 +77,12 @@ while(k_x <= n - r);
         blurred = CTF .* IF;
         % crop out region of interest
         blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
+        % zero-pad
+        blurred = zero_pad(blurred, pad_px);
         % inverse fourier transform
-        sub_image =(ifft2(ifftshift(blurred));
+        sub_image = ifft2(ifftshift(blurred));
+        % crop to remove zero-padding (or should we decimate?)
+        sub_image = sub_image(pad_px:end-pad_px, pad_px:end-pad_px);
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
