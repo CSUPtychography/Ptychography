@@ -78,7 +78,7 @@ while(k_x <= n - r);
         % crop out region of interest
         blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
         % zero-pad
-        blurred = zero_pad(blurred, pad_px);
+        blurred = pad_image(blurred, pad_px);
         % inverse fourier transform
         sub_image = ifft2(ifftshift(blurred));
         % crop to remove zero-padding (or should we decimate?)

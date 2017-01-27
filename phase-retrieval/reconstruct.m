@@ -50,7 +50,7 @@ for iter = 1:iterations         % one per iteration
             pieceFT = objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r);
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % zero pad to avoid problems
-            pieceFT_constrained = zero_pad(pieceFT_constrained, pad_px);
+            pieceFT_constrained = pad_image(pieceFT_constrained, pad_px);
             % iFFT
             % may need a scale factor here due to size difference
             piece = ifft2(ifftshift(pieceFT_constrained));
@@ -59,7 +59,7 @@ for iter = 1:iterations         % one per iteration
             % Replace intensity
             piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % zero pad again (this is so hacky)
-            piece_replaced = zero_pad(piece_replaced, pad_px);
+            piece_replaced = pad_image(piece_replaced, pad_px);
             % FFT
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
