@@ -77,7 +77,7 @@ while(k_x <= n - r);
         % crop out region of interest
         blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
         % inverse fourier transform
-        sub_image =(ifft2(ifftshift(blurred));
+        sub_image = ifft2(ifftshift(blurred));
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
