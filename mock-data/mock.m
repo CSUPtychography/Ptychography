@@ -11,6 +11,8 @@ magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
 
 r = 64;     % CTF radius in pixels
+weak_phase = true;
+weak_phase_factor = 0.5;
 
 % coordinates of image to display
 a = 2;
@@ -20,12 +22,25 @@ b = 2;
 % this will later be determined by LED spacing, distance, and other things
 delta_k_px = r;
 
-filename = sprintf('mockim_r%d_dk%d',r,delta_k_px);
+% handle weak phase
+if weak_phase
+    % string with parameters for filename
+    paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
+    phase_factor = weak_phase_factor;
+else
+    paramstr = sprintf('r%d_dk%d',r,delta_k_px);
+    phase_factor = 1;
+end % weak phase if
 
-%% Import image data
+% add magnitude and phase source indicators
+paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
 
-mag = imread(magnitude_file);
-phase = imread(phase_file);
+filename = strcat('mockim_', paramstr);
+
+%% Import and normalize image data
+
+mag = normgray(imread(magnitude_file));
+phase = normgray(imread(phase_file));
 
 % check size
 if size(mag) ~= size(phase)
@@ -34,15 +49,9 @@ end
 
 % check squareness (?)
 
-%% Prepare imported data
+%% Generate Phase Object
 
-% normalize between 0 and 1 for magnitude,
-% and -0.5 to 0.5 for phase
-mag2 = double(mag) / 255;
-phase2 = double(phase) / 255 - 0.5;
-
-% pack into single phase image
-I = mag2 .* exp(1i * 2 * pi * phase2);
+I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
 
 %% sub image construction
 
