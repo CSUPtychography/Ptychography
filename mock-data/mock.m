@@ -36,7 +36,7 @@ end % weak phase if
 % add magnitude and phase source indicators
 paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
 
-filename = strcat('mockim_', paramstr);
+filename = strcat('mockim_p_', paramstr);
 
 %% Import and normalize image data
 
