@@ -13,7 +13,7 @@ phase_file = 'lena.png';
 r = 64;         % CTF radius in pixels
 weak_phase = true;
 weak_phase_factor = 0.5;
-pad_px = 10;    % number of pixels to zero-pad
+pad_px = r;     % number of pixels to zero-pad
 
 % coordinates of image to display
 a = 2;
@@ -36,7 +36,7 @@ end % weak phase if
 % add magnitude and phase source indicators
 paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
 
-filename = strcat('mockim_p_', paramstr);
+filename = strcat('mockim_d_', paramstr);
 
 %% Import and normalize image data
 
@@ -81,8 +81,8 @@ while(k_x <= n - r);
         blurred = padarray(blurred, [pad_px pad_px]);
         % inverse fourier transform
         sub_image = ifft2(ifftshift(blurred));
-        % crop to remove zero-padding (or should we decimate?)
-        sub_image = sub_image(pad_px:end-pad_px, pad_px:end-pad_px);
+        % decimate to resize after zero-padding
+        sub_image = sub_image(1:2:end, 1:2:end);
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array

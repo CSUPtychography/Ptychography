@@ -8,7 +8,7 @@ filename = '../mock-data/mockim_r64_dk64.mat';
 
 r = 64;                     % CTF radius in pixels
 delta_k = r;                % space between adjacent images in pixels
-pad_px = 10;                % number of pixels to zero pad
+pad_px = r;                 % number of pixels to zero pad
 
 object_size = [256 256];    % final object size in pixels
 
@@ -54,8 +54,8 @@ for iter = 1:iterations         % one per iteration
             % iFFT
             % may need a scale factor here due to size difference
             piece = ifft2(ifftshift(pieceFT_constrained));
-            % crop to fix zero-padding
-            piece = piece(pad_px+1:end-pad_px, pad_px+1:end-pad_px);
+            % decimate to fix zero-padding
+            piece = piece(1:2:end, 1:2:end);
             % Replace intensity
             piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % zero pad again (this is so hacky)
@@ -63,8 +63,8 @@ for iter = 1:iterations         % one per iteration
             % FFT
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
-            % resize
-            piece_replacedFT = piece_replacedFT(pad_px+1:end-pad_px, pad_px+1:end-pad_px); % gross
+            % decimate
+            piece_replacedFT = piece_replacedFT(1:2:end, 1:2:end);
             % put it back
             objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
