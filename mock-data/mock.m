@@ -82,7 +82,7 @@ while(k_x <= n - r);
         % inverse fourier transform
         sub_image = ifft2(ifftshift(blurred));
         % crop to remove zero-padding (or should we decimate?)
-        sub_image = sub_image(pad_px:end-pad_px, pad_px:end-pad_px);
+        sub_image = sub_image(pad_px+1:end-pad_px, pad_px+1:end-pad_px);
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
