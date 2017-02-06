@@ -22,11 +22,14 @@ and phase retrieval algorithm for a senior design project
 
 # Getting Started with Git #
 
-Both [Atlassian](https://www.atlassian.com/git/tutorials/what-is-version-control) 
-and [git](https://git-scm.com/book/en/v2) 
-have fairly detailed reference materials available, 
+Both [Atlassian](https://www.atlassian.com/git/tutorials/what-is-version-control)
+and [git](https://git-scm.com/book/en/v2)
+have fairly detailed reference materials available,
 and there are scores of other tutorials around the web.
 Below is a highly-abridged guide.
+
+All of the commands below can be entered on the windows command line, or in git bash.
+They can also be used in matlab if preceded by `!`.
 
 ### Install git ###
 
@@ -62,6 +65,12 @@ and the exact changes made can be seen with `git diff` or `git diff --staged`.
 Once changes have been staged, they can be committed to the local repository
 with `git commit`.
 **Be sure to specify a [good commit message](http://chris.beams.io/posts/git-commit/).**
+Try to make 
+[atomic commits](https://seesparkbox.com/foundry/atomic_commits_with_git)
+as much as possible. 
+It is possible to commit only some changes in a file using `git add -p`
+if the changes are unrelated. 
+See the link on atomic commits above for details. 
 
 ### Push the changes ###
 
@@ -95,6 +104,28 @@ The difference between `reset` and `revert` can be somewhat mysterious.
 [this](https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting)
 may help de-mystify.
 
+### Branches ###
+
+It is generally good practice to keep unrelated features on different branches
+to avoid conflicts and allow for parallel feature development.
+A branch can be created using `git branch <branch name>`.
+To switch to a branch use `git checkout <branch>`.
+The 'main' or default branch is called `master`.
+A list of all branches and the current branch can be seen with `git branch`.
+To push a branch's commits to a remote repository, use `git push <branch>`
+Right after a branch has been created, `git push -u origin <branch>` must be used
+to create a branch in the remote repo, and set the upstream reference.
+[More info here](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging).
+
+Once a branch's feature has been completed, and is ready for publishing,
+it must be merged into the master branch.
+This is done by checking out the master branch
+(or whatever branch the feature should be merged into),
+and running `git merge <branch>`.
+If conflicts are present they must be resolved, and a commit message specified.
+A new commit will be created on the current branch.
+[Here is some information on resolving conflicts](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#Basic-Merge-Conflicts).
+
 ### Going Further ###
 
  * [MATLAB Integration](http://blogs.mathworks.com/community/2014/10/20/matlab-and-git/)
@@ -103,6 +134,9 @@ may help de-mystify.
  * [Lots more tools](https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection)
 
 ## Command Reference ##
+
+These commands can be used in the matlab command line by preceding them with `!`.
+(e.g. `!git diff`)
 
 Command                     | Function
 ----------------------------|----------
@@ -117,6 +151,11 @@ Command                     | Function
 `git log -n --oneline`      | Show only last _n_ commits, one line each
 `git pull --rebase`         | Fetch new changes from remote repository
 `git push`                  | Push local commits to remote repository
+`git branch <branch>`       | Create a new branch called `<branch>`
+`git checkout <branch>`     | Switch to another branch
+`git checkout -b <branch>`  | Create a new branch and switch to it
+`git merge <branch>`        | Merge `<branch>` into the current branch
+`git push <branch>`         | Push and update tracking information
 
-See also `git help <command>` and 
-[this cheat sheet](https://services.github.com/kit/downloads/github-git-cheat-sheet.pdf). 
+See also `git help <command>` and
+[this cheat sheet](https://services.github.com/kit/downloads/github-git-cheat-sheet.pdf).
