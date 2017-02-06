@@ -18,8 +18,16 @@ weak_phase_factor = 0.5;
 a = 2;
 b = 2;
 
+% optical parameters
+wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
+LED_spacing = 5e-3;     % LED spacing in meters
+sample_spacing = 20e-3; % distance from matrix to sample in meters
+No_LEDs = 15^2;         % Number of LEDs (should be square)
+
+NA = 0.08;      % numerical aperture of the objective
+
 % distance between sub-images in k-space in pixels
-% this will later be determined by LED spacing, distance, and other things
+% this will now be determined by LED spacing, distance, and other things
 delta_k_px = r;
 
 % handle weak phase
