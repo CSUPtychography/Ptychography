@@ -86,28 +86,26 @@ IF = fftshift(fft2(I));
 [m,n] = size(I);                        % size variables
 [X,Y] = meshgrid(1:n,1:m);              % grid of coordinates
 Images = cell(floor([m,n] / r - 1));    % initialize cell array
-imagesX = 1;                            % initial image index
 
-for k_x = r:delta_k_px:n-r
-    imagesY = 1;        % initial image index
-    for k_y = r:delta_k_px:m-r
+kx_px = r:delta_k_px:n-r;   % transverse k in pixels
+ky_px = r:delta_k_px:m-r;   % transverse k in pixels
+
+for i = 1:length(kx_px)
+    for j = 1:length(ky_px)
         % preparing transfer function
-        % it's a circle of radius r with center (k_x,k_y)
-        CTF = (sqrt((X - k_x).^2 + (Y - k_y).^2) < r);
+        % it's a circle of radius r with center (kx,ky)
+        CTF = (sqrt((X - kx_px(i)).^2 + (Y - ky_px(j)).^2) < r);
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
         % crop out region of interest
-        blurred = blurred(k_y-r+1:k_y+r, k_x-r+1:k_x+r);
+        blurred = blurred(ky_px(j)-r+1:ky_px(j)+r, kx_px(i)-r+1:kx_px(i)+r);
         % inverse fourier transform
         sub_image = ifft2(ifftshift(blurred));
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
-        Images{imagesY,imagesX} = sub_image;
-
-        imagesY = imagesY+1;        % increment image index
+        Images{j,i} = sub_image;
     end % ky for
-    imagesX=imagesX+1;          % increment image index
 end % kx for
 
 %% display image
