@@ -1,5 +1,5 @@
-function sequence = spiral(length)
-%spiral: generates a sequence of points in an outward square spiral
+function sequence = squiral(length)
+%squiral: generates a sequence of points in an outward square spiral
 %    usage:  sequence = spiral(length);
 %    input:  the length (number of points) in the spiral 
 %              (choose a square for a square spiral)
