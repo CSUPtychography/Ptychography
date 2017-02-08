@@ -22,9 +22,20 @@ b = 2;
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % LED spacing in meters
 sample_spacing = 20e-3; % distance from matrix to sample in meters
-No_LEDs = 15^2;         % Number of LEDs (should be square)
+x_offset = 0;           % distance from center of matrix to optic axis
+y_offset = 0;
+arraysize = 15;         % size of one side of the square of LEDs
+No_LEDs = arraysize^2;  % Number of LEDs (should be square)
 
 NA = 0.08;      % numerical aperture of the objective
+
+% position of the farthest LED
+LED_limit = LED_spacing * (arraysize - 1) / 2
+LED_positions = -LED_limit:LED_spacing:LED_limit;   % list of LED positions
+k = 2 * pi / wavelength;    % wavevector magnitude
+% lists of transverse wavevectors
+kx_list = k * sin(atan((LED_positions + x_offset) / sample_spacing));
+ky_list = k * sin(atan((LED_positions + y_offset) / sample_spacing));
 
 % distance between sub-images in k-space in pixels
 % this will now be determined by LED spacing, distance, and other things
