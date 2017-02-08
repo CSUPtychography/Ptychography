@@ -106,9 +106,9 @@ for k_x = r:delta_k_px:n-r
         Images{imagesY,imagesX} = sub_image;
 
         imagesY = imagesY+1;        % increment image index
-    end % while
+    end % ky for
     imagesX=imagesX+1;          % increment image index
-end % while
+end % kx for
 
 %% display image
 
