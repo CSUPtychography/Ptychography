@@ -83,16 +83,14 @@ I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
 IF = fftshift(fft2(I));
 
 % preparing variables for transfer function
-k_x = r;                                % initial k_x coordinate
 [m,n] = size(I);                        % size variables
 [X,Y] = meshgrid(1:n,1:m);              % grid of coordinates
 Images = cell(floor([m,n] / r - 1));    % initialize cell array
 imagesX = 1;                            % initial image index
 
-while(k_x <= n - r);
-    k_y = r;            % initial k_y coordinate
+for k_x = r:delta_k_px:n-r
     imagesY = 1;        % initial image index
-    while (k_y <= m - r);
+    for k_y = r:delta_k_px:m-r
         % preparing transfer function
         % it's a circle of radius r with center (k_x,k_y)
         CTF = (sqrt((X - k_x).^2 + (Y - k_y).^2) < r);
@@ -108,10 +106,8 @@ while(k_x <= n - r);
         Images{imagesY,imagesX} = sub_image;
 
         imagesY = imagesY+1;        % increment image index
-        k_y = k_y + delta_k_px;     % move center of circle
     end % while
     imagesX=imagesX+1;          % increment image index
-    k_x = k_x + delta_k_px;     % move center of circle
 end % while
 
 %% display image
