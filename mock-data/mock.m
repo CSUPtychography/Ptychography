@@ -21,7 +21,7 @@ b = 2;
 % optical parameters
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % LED spacing in meters
-sample_spacing = 20e-3; % distance from matrix to sample in meters
+matrix_spacing = 20e-3; % distance from matrix to sample in meters
 x_offset = 0;           % distance from center of matrix to optic axis
 y_offset = 0;
 arraysize = 15;         % size of one side of the square of LEDs
@@ -34,10 +34,10 @@ LED_limit = LED_spacing * (arraysize - 1) / 2;
 LED_positions = -LED_limit:LED_spacing:LED_limit;   % list of LED positions
 k = 2 * pi / wavelength;    % wavevector magnitude
 % lists of transverse wavevectors
-kx_list = k * sin(atan((LED_positions + x_offset) / sample_spacing));
-ky_list = k * sin(atan((LED_positions + y_offset) / sample_spacing));
+kx_list = k * sin(atan((LED_positions + x_offset) / matrix_spacing));
+ky_list = k * sin(atan((LED_positions + y_offset) / matrix_spacing));
 
-NA_led = sin(atan(LED_limit / sample_spacing));     % NA of LEDs
+NA_led = sin(atan(LED_limit / matrix_spacing));     % NA of LEDs
 NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
 
 scale_factor = NA_syn / NA_obj;     % resolution increase
