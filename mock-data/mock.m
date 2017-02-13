@@ -29,6 +29,24 @@ No_LEDs = arraysize^2;  % Number of LEDs (should be square)
 
 NA_obj = 0.08;          % numerical aperture of the objective
 
+%% Import and normalize image data
+
+mag = normgray(imread(magnitude_file));
+phase = normgray(imread(phase_file));
+
+% check size
+if size(mag) ~= size(phase)
+    error('Images are not the same size');
+end
+
+% check squareness (?)
+
+%% Generate Phase Object
+
+I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
+
+%% Calculated parameters
+
 % position of the farthest LED
 LED_limit = LED_spacing * (arraysize - 1) / 2;
 LED_positions = -LED_limit:LED_spacing:LED_limit;   % list of LED positions
@@ -71,22 +89,6 @@ end % weak phase if
 paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
 
 filename = strcat('mockim_', paramstr);
-
-%% Import and normalize image data
-
-mag = normgray(imread(magnitude_file));
-phase = normgray(imread(phase_file));
-
-% check size
-if size(mag) ~= size(phase)
-    error('Images are not the same size');
-end
-
-% check squareness (?)
-
-%% Generate Phase Object
-
-I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
 
 %% sub image construction
 
