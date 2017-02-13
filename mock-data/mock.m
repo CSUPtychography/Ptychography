@@ -40,7 +40,18 @@ ky_list = k * sin(atan((LED_positions + y_offset) / matrix_spacing));
 NA_led = sin(atan(LED_limit / matrix_spacing));     % NA of LEDs
 NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
 
-scale_factor = NA_syn / NA_obj;     % resolution increase
+enhancement_factor = 2 * NA_syn / NA_obj;     % resolution increase
+
+% calculate pixel size
+oversampling_factor = 1.5;          % how much over Nyquist to sample
+
+% pixel size for sub-images (in meters)
+% For the actual setup, this will be determined by the CCD pixel size,
+% and magnification factor.
+sub_px_size = wavelength / 2 / NA_obj / oversampling_factor;
+% pixel size for reconstructed image (in meters)
+% can also be determined by sub_px_size / enhancement_factor
+rec_px_size = wavelength / 4 / NA_syn / oversampling_factor;
 
 % distance between sub-images in k-space in pixels
 % this will now be determined by LED spacing, distance, and other things
