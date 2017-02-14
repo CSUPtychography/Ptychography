@@ -71,6 +71,16 @@ sub_px_size = wavelength / 2 / NA_obj / oversampling_factor;
 % can also be determined by sub_px_size / enhancement_factor
 rec_px_size = wavelength / 4 / NA_syn / oversampling_factor;
 
+kt_max_sub = 1/sub_px_size; % maximum spatial frequency for sub-image
+kt_max_rec = 1/rec_px_size; % for reconstructed image
+kt_max_obj = 1 * pi / wavelength * NA_obj;  % for objective
+
+% calculate subimage resolution
+[m_r,n_r] = size(I);                        % size of large image
+% size of sub images in pixels
+m_s = floor(m_r / enhancement_factor);
+n_s = floor(n_r / enhancement_factor);
+
 % distance between sub-images in k-space in pixels
 % this will now be determined by LED spacing, distance, and other things
 delta_k_px = r;
@@ -96,13 +106,14 @@ filename = strcat('mockim_', paramstr);
 IF = fftshift(fft2(I));
 
 % preparing variables for transfer function
-[m,n] = size(I);                        % size variables
-[X,Y] = meshgrid(1:n,1:m);              % grid of coordinates
-Images = cell(floor([m,n] / r - 1));    % initialize cell array
+[kx_g,ky_g] = meshgrid(linspace(-kt_max_rec,kt_max_rec,m_r), ...
+    linspace(-kt_max_rec,kt_max_rec,n_r));  % grid of k_t coordinates
+[X,Y] = meshgrid(1:n_r,1:m_r);              % grid of coordinates
+Images = cell(floor([m_r,n_r] / r - 1));    % initialize cell array
 
-kx_px = r:delta_k_px:n-r;   % transverse k in pixels
-ky_px = r:delta_k_px:m-r;   % transverse k in pixels
-
+kx_px = r:delta_k_px:n_r-r;   % transverse k in pixels
+ky_px = r:delta_k_px:m_r-r;   % transverse k in pixels
+%%
 for i = 1:length(kx_px)
     for j = 1:length(ky_px)
         % preparing transfer function
