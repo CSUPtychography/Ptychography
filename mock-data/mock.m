@@ -25,6 +25,7 @@ No_LEDs = arraysize^2;  % Number of LEDs (should probably be square)
 
 NA_obj = 0.08;          % numerical aperture of the objective
 min_overlap = 50;       % (%) minimum overlap between adjacent subimages 
+oversampling_factor = 1.5;  % how much over Nyquist to sample
 
 %% Import and normalize image data
 
@@ -69,7 +70,6 @@ if (overlap < min_overlap)
 end % overlap if
 
 % calculate pixel size
-oversampling_factor = 1.5;          % how much over Nyquist to sample
 
 % pixel size for sub-images (in meters)
 % For the actual setup, this will be determined by the CCD pixel size,
