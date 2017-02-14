@@ -24,6 +24,7 @@ arraysize = 15;         % size of one side of the square of LEDs
 No_LEDs = arraysize^2;  % Number of LEDs (should probably be square)
 
 NA_obj = 0.08;          % numerical aperture of the objective
+min_overlap = 50;       % (%) minimum overlap between adjacent subimages 
 
 %% Import and normalize image data
 
@@ -55,6 +56,17 @@ NA_led = sin(atan(LED_limit / matrix_spacing)); % NA of LEDs
 NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
 
 enhancement_factor = 2 * NA_syn / NA_obj;       % resolution increase
+
+% check overlap criteria
+NA_single_led = sin(atan(LED_spacing / matrix_spacing));
+overlap = 100 - NA_single_led / 2 / NA_obj * 100; % sub-aperture percent overlap
+if (overlap < min_overlap)
+    if (overlap < 0)
+        error('Sub-apertures do not overlap. Increase matrix spacing')
+    else
+        error('Sub-Apertures only overlap by % 3.0f%%. Increase matrix spacing', overlap);
+    end % less than zero if
+end % overlap if
 
 % calculate pixel size
 oversampling_factor = 1.5;          % how much over Nyquist to sample
