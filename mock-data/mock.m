@@ -122,18 +122,25 @@ Images = cell(arraysize);   % initialize cell array
 kx_px = r:delta_k_px:n_r-r; % transverse k in pixels
 ky_px = r:delta_k_px:m_r-r; % transverse k in pixels
 
+% synthetic_CTF = false(m_r,n_r);
+
 %%
 for i = 1:length(kx_px)
     for j = 1:length(ky_px)
         % preparing transfer function
         % it's a circle of radius r with center (kx,ky)
         CTF = (sqrt((X - kx_px(i)).^2 + (Y - ky_px(j)).^2) < r);
+%         imagesc(kx_axis_rec,ky_axis_rec,abs(CTF)); title('CTF');
+%         synthetic_CTF = sinthetic_CTF || CTF;
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
+%         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % crop out region of interest
         blurred = blurred(ky_px(j)-r+1:ky_px(j)+r, kx_px(i)-r+1:kx_px(i)+r);
+%         imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('blurred');
         % inverse fourier transform
         sub_image = ifft2(ifftshift(blurred));
+%         imagesc(abs(sub_image)); title('sub-image');
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
