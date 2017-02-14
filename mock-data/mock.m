@@ -23,9 +23,9 @@ wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % LED spacing in meters
 matrix_spacing = 20e-3; % distance from matrix to sample in meters
 x_offset = 0;           % distance from center of matrix to optic axis
-y_offset = 0;
+y_offset = 0;           % (in meters)
 arraysize = 15;         % size of one side of the square of LEDs
-No_LEDs = arraysize^2;  % Number of LEDs (should be square)
+No_LEDs = arraysize^2;  % Number of LEDs (should probably be square)
 
 NA_obj = 0.08;          % numerical aperture of the objective
 
@@ -55,10 +55,10 @@ k = 2 * pi / wavelength;    % wavevector magnitude
 kx_list = k * sin(atan((LED_positions + x_offset) / matrix_spacing));
 ky_list = k * sin(atan((LED_positions + y_offset) / matrix_spacing));
 
-NA_led = sin(atan(LED_limit / matrix_spacing));     % NA of LEDs
+NA_led = sin(atan(LED_limit / matrix_spacing)); % NA of LEDs
 NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
 
-enhancement_factor = 2 * NA_syn / NA_obj;     % resolution increase
+enhancement_factor = 2 * NA_syn / NA_obj;       % resolution increase
 
 % calculate pixel size
 oversampling_factor = 1.5;          % how much over Nyquist to sample
@@ -76,7 +76,7 @@ kt_max_rec = 1/rec_px_size; % for reconstructed image
 kt_max_obj = 1 * pi / wavelength * NA_obj;  % for objective
 
 % calculate subimage resolution
-[m_r,n_r] = size(I);                        % size of large image
+[m_r,n_r] = size(I);        % size of reconstructed image
 % size of sub images in pixels
 m_s = floor(m_r / enhancement_factor);
 n_s = floor(n_r / enhancement_factor);
@@ -95,7 +95,7 @@ else
     phase_factor = 1;
 end % weak phase if
 
-% add magnitude and phase source indicators
+% add magnitude and phase source indicators to filename
 paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
 
 filename = strcat('mockim_', paramstr);
@@ -110,9 +110,9 @@ IF = fftshift(fft2(I));
     linspace(-kt_max_rec,kt_max_rec,n_r));  % grid of k_t coordinates
 [X,Y] = meshgrid(1:n_r,1:m_r);              % grid of coordinates
 Images = cell(floor([m_r,n_r] / r - 1));    % initialize cell array
+kx_px = r:delta_k_px:n_r-r; % transverse k in pixels
+ky_px = r:delta_k_px:m_r-r; % transverse k in pixels
 
-kx_px = r:delta_k_px:n_r-r;   % transverse k in pixels
-ky_px = r:delta_k_px:m_r-r;   % transverse k in pixels
 %%
 for i = 1:length(kx_px)
     for j = 1:length(ky_px)
