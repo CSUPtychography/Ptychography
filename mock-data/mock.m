@@ -14,10 +14,6 @@ r = 64;     % CTF radius in pixels
 weak_phase = true;
 weak_phase_factor = 0.5;
 
-% coordinates of image to display
-a = 2;
-b = 2;
-
 % optical parameters
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % LED spacing in meters
@@ -108,7 +104,6 @@ IF = fftshift(fft2(I));
 % preparing variables for transfer function
 [kx_g,ky_g] = meshgrid(linspace(-kt_max_rec,kt_max_rec,m_r), ...
     linspace(-kt_max_rec,kt_max_rec,n_r));  % grid of k_t coordinates
-[X,Y] = meshgrid(1:n_r,1:m_r);              % grid of coordinates
 Images = cell(floor([m_r,n_r] / r - 1));    % initialize cell array
 kx_px = r:delta_k_px:n_r-r; % transverse k in pixels
 ky_px = r:delta_k_px:m_r-r; % transverse k in pixels
@@ -131,13 +126,6 @@ for i = 1:length(kx_px)
         Images{j,i} = sub_image;
     end % ky for
 end % kx for
-
-%% display image
-
-figure(1)
-image(Images{a,b})
-colormap gray;
-title(sprintf('Subimage (%d,%d)',a,b));
 
 %% save images
 save(filename,'Images');
