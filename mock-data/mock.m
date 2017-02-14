@@ -77,9 +77,14 @@ kt_max_obj = 1 * pi / wavelength * NA_obj;  % for objective
 m_s = floor(m_r / enhancement_factor);
 n_s = floor(n_r / enhancement_factor);
 
-% distance between sub-images in k-space in pixels
-% this will now be determined by LED spacing, distance, and other things
-delta_k_px = r;
+% spatial frequency axes for spectrums of images
+kx_axis_sub = linspace(-kt_max_sub,kt_max_sub,m_s);
+ky_axis_sub = linspace(-kt_max_sub,kt_max_sub,n_s);
+kx_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
+ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,n_r);
+
+% grid of spatial frequencies for each pixel of reconstructed spectrum
+[kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
 
 % handle weak phase
 if weak_phase
@@ -101,10 +106,7 @@ filename = strcat('mockim_', paramstr);
 % perform FFT on I
 IF = fftshift(fft2(I));
 
-% preparing variables for transfer function
-[kx_g,ky_g] = meshgrid(linspace(-kt_max_rec,kt_max_rec,m_r), ...
-    linspace(-kt_max_rec,kt_max_rec,n_r));  % grid of k_t coordinates
-Images = cell(floor([m_r,n_r] / r - 1));    % initialize cell array
+Images = cell(arraysize);   % initialize cell array
 kx_px = r:delta_k_px:n_r-r; % transverse k in pixels
 ky_px = r:delta_k_px:m_r-r; % transverse k in pixels
 
