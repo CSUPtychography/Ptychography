@@ -129,7 +129,7 @@ for i = 1:arraysize
         CTF = ((kx_g_rec - kx_list(i)).^2 ...
             + (ky_g_rec - ky_list(j)).^2) < kt_max_obj^2;
 %         imagesc(kx_axis_rec,ky_axis_rec,abs(CTF)); title('CTF');
-%         synthetic_CTF = sinthetic_CTF || CTF;
+%         synthetic_CTF = synthetic_CTF | CTF;
         % multiply transfer function by FFt'd image
         blurred = CTF .* IF;
 %         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
