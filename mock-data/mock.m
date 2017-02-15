@@ -17,7 +17,7 @@ weak_phase_factor = 0.5;
 % optical parameters
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % LED spacing in meters
-matrix_spacing = 20e-3; % distance from matrix to sample in meters
+matrix_spacing = 70e-3; % distance from matrix to sample in meters
 x_offset = 0;           % distance from center of matrix to optic axis
 y_offset = 0;           % (in meters)
 arraysize = 15;         % size of one side of the square of LEDs
