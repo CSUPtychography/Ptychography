@@ -1,16 +1,11 @@
 %% create mock data to test phase retrieval algorithm
 % This script takes any two images, and creates sub-images with
 % less resolution, to act as mock data for ptychography
-% magnitude_file is the file you'd like to act as the magnitude
-% phase_file is the file you'd like to act as the phase
-% r is the radius you'd like to use for the transfer function
-% a and b are the coordinates of the subimage to display
 
 %% parameters
 magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
 
-r = 64;     % CTF radius in pixels
 weak_phase = true;
 weak_phase_factor = 0.5;
 
@@ -27,7 +22,9 @@ NA_obj = 0.08;          % numerical aperture of the objective
 min_overlap = 50;       % (%) minimum overlap between adjacent subimages 
 oversampling_factor = 1.5;  % how much over Nyquist to sample
 
-%% Import and normalize image data
+%% Generate Phase Object
+
+% Import and normalize image data
 
 mag = normgray(imread(magnitude_file));
 phase = normgray(imread(phase_file));
@@ -39,8 +36,17 @@ end
 
 % check squareness (?)
 
-%% Generate Phase Object
+% handle weak phase
+if weak_phase
+    % string with parameters for filename
+    % paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
+    phase_factor = weak_phase_factor;
+else
+    % paramstr = sprintf('r%d_dk%d',r,delta_k_px);
+    phase_factor = 1;
+end % weak phase if
 
+% combine into complex object
 I = mag .* exp(1i * 2 * pi * (phase - 0.5) * phase_factor);
 
 %% Calculated parameters
@@ -98,20 +104,10 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,n_r);
 % grid of spatial frequencies for each pixel of reconstructed spectrum
 [kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
 
-% handle weak phase
-if weak_phase
-    % string with parameters for filename
-    paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
-    phase_factor = weak_phase_factor;
-else
-    paramstr = sprintf('r%d_dk%d',r,delta_k_px);
-    phase_factor = 1;
-end % weak phase if
-
 % add magnitude and phase source indicators to filename
-paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
-
-filename = strcat('mockim_', paramstr);
+% paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
+%
+% filename = strcat('mockim_', paramstr);
 
 %% sub image construction
 
@@ -155,4 +151,4 @@ for i = 1:arraysize
 end % kx for
 
 %% save images
-save(filename,'Images');
+% save(filename,'Images');
