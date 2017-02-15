@@ -85,7 +85,7 @@ sub_px_size = wavelength / 2 / NA_obj / oversampling_factor;
 % This must be half the size for doing the reconstruction, 
 % but this is better for generating the mock data because we won't throw
 % away as much of the complex object we're using.
-rec_px_size = wavelength / 2 / NA_syn / oversampling_factor;
+rec_px_size = wavelength / 2 / NA_syn;
 
 
 kt_max_sub = pi / sub_px_size;  % maximum spatial frequency for sub-image
