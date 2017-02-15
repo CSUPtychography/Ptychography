@@ -134,14 +134,14 @@ for i = 1:arraysize
         blurred = CTF .* IF;
 %         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % crop out region of interest
-        kx_low = floor((kx_list(i) - kt_max_sub + kt_max_rec) ...
-            / 2 / kt_max_rec * (m_r - 1)) + 1;
-        kx_high = ceil((kx_list(i) + kt_max_sub + kt_max_rec) ...
-            / 2 / kt_max_rec * (m_r - 1)) + 1;
-        ky_low = floor((ky_list(j) - kt_max_sub + kt_max_rec) ...
-            / 2 / kt_max_rec * (n_r - 1)) + 1;
-        ky_high = ceil((ky_list(j) + kt_max_sub + kt_max_rec) ...
-            / 2 / kt_max_rec * (n_r - 1)) + 1;
+        kx_center = round((kx_list(i) + kt_max_rec) ...
+            / 2 / kt_max_rec * m_r - 1) + 1;
+        ky_center = round((ky_list(j) + kt_max_rec) ...
+            / 2 / kt_max_rec * n_r - 1) + 1;
+        kx_low = round(kx_center - (m_s - 1) / 2);
+        kx_high = round(kx_center + (m_s - 1) / 2);
+        ky_low = round(ky_center - (n_s - 1) / 2);
+        ky_high = round(ky_center + (n_s - 1) / 2);
         blurred = blurred(ky_low:ky_high, kx_low:kx_high);
 %         imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('blurred');
         % inverse fourier transform
