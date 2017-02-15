@@ -75,28 +75,25 @@ if (overlap < min_overlap)
     end % less than zero if
 end % overlap if
 
+% maximum spatial frequency for sub-image
+kt_max_sub = k * NA_obj * oversampling_factor;
+% and for reconstructed image
+% fuckery to use as much of the complex object as possible. ideally want no
+% oversampling on complex object, but subimages need oversampling, and
+% using none on object puts subimage's spectrum outside object's spectrum.
+% Use synthetic NA plus only the margin needed for subimage oversampling.
+kt_max_rec = k * (NA_syn + NA_obj * (oversampling_factor - 1));
+kt_max_obj = k * NA_obj;  % for objective
+
 % calculate pixel size
+sub_px_size = pi / kt_max_sub;
+rec_px_size = pi / kt_max_rec;
 
-% pixel size for sub-images (in meters)
-% For the actual setup, this will be determined by the CCD pixel size,
-% and magnification factor.
-sub_px_size = wavelength / 2 / NA_obj / oversampling_factor;
-% pixel size for reconstructed image (in meters)
-% This must be half the size for doing the reconstruction, 
-% but this is better for generating the mock data because we won't throw
-% away as much of the complex object we're using.
-rec_px_size = wavelength / 2 / NA_syn;
-
-
-kt_max_sub = pi / sub_px_size;  % maximum spatial frequency for sub-image
-kt_max_rec = pi / rec_px_size;  % for reconstructed image
-kt_max_obj = 2 * pi / wavelength * NA_obj;  % for objective
-
-% calculate subimage resolution
+% calculate subimage size
 [m_r,n_r] = size(I);        % size of reconstructed image
 % size of sub images in pixels
-m_s = floor(m_r / enhancement_factor);
-n_s = floor(n_r / enhancement_factor);
+m_s = floor(m_r * kt_max_sub / kt_max_rec);
+n_s = floor(n_r * kt_max_sub / kt_max_rec);
 
 % spatial frequency axes for spectrums of images
 kx_axis_sub = linspace(-kt_max_sub,kt_max_sub,n_s);
