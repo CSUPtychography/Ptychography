@@ -79,9 +79,9 @@ sub_px_size = wavelength / 2 / NA_obj / oversampling_factor;
 % can also be determined by sub_px_size / enhancement_factor
 rec_px_size = wavelength / 4 / NA_syn / oversampling_factor;
 
-kt_max_sub = 1/sub_px_size; % maximum spatial frequency for sub-image
-kt_max_rec = 1/rec_px_size; % for reconstructed image
-kt_max_obj = 1 * pi / wavelength * NA_obj;  % for objective
+kt_max_sub = pi / sub_px_size;  % maximum spatial frequency for sub-image
+kt_max_rec = pi / rec_px_size;  % for reconstructed image
+kt_max_obj = 2 * pi / wavelength * NA_obj;  % for objective
 
 % calculate subimage resolution
 [m_r,n_r] = size(I);        % size of reconstructed image
