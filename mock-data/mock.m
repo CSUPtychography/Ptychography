@@ -82,7 +82,10 @@ kt_max_sub = k * NA_obj * oversampling_factor;
 % oversampling on complex object, but subimages need oversampling, and
 % using none on object puts subimage's spectrum outside object's spectrum.
 % Use synthetic NA plus only the margin needed for subimage oversampling.
-kt_max_rec = k * (NA_syn + NA_obj * (oversampling_factor - 1));
+% also take matrix offset into account
+max_offset = max(abs([x_offset, y_offset]));
+NA_matrix = sin(atan((LED_limit + max_offset) / matrix_spacing));
+kt_max_rec = k * (NA_matrix + NA_obj * oversampling_factor);
 kt_max_obj = k * NA_obj;  % for objective
 
 % calculate pixel size
