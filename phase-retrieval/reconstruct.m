@@ -6,18 +6,34 @@
 
 filename = '../mock-data/mockim_r64_dk64.mat';
 
-r = 64;                     % CTF radius in pixels
-delta_k = r;                % space between adjacent images in pixels
-
-object_size = [256 256];    % final object size in pixels
-
 iterations = 5;             % number of iterations
 
 %% import images and other data (?)
 
 import = load(filename);
 
+try
+    version = import.version;
+catch ME
+    if strcmp(ME.identifier,'MATLAB:nonExistentField')
+        cause = MException('MATLAB:reconstruct:noVersion', ...
+            'File %s contains no version information', filename);
+        ME = ME.addCause(cause);
+    end % identifier if
+    ME.rethrow;
+end % version try/catch
+
+if version ~= 0
+    error('This algorithm is incompatible with file version %d.',version);
+end % version if
+
+r = import.r;                   % CTF radius in pixels
+delta_k = import.delta_k;       % space between adjacent images in pixels
+
+object_size = import.rec_size;  % final object size in pixels
+
 Images = import.Images;
+
 array_size = size(Images);
 
 %% retrieve phase iteratively

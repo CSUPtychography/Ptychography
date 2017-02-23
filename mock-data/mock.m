@@ -97,5 +97,8 @@ image(Images{a,b})
 colormap gray;
 title(sprintf('Subimage (%d,%d)',a,b));
 
-%% save images
-save(filename,'Images');
+%% save data
+version = 0;
+rec_size = [m,n];
+delta_k = delta_k_px;
+save(filename,'version','rec_size','delta_k','r','Images');
