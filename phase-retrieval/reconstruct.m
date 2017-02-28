@@ -101,13 +101,15 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 object = complex(zeros(m_r,n_r));
 objectFT = fftshift(fft2(object));
 % interpolate on-axis image maybe?  
+% this is equivalent to doing the on-axis image first,
+% and will be done eventually if a spiral scheme is used
 
 % only need to generate one CTF, since it will be applied to the sub-images
 % after they are extracted from the reconstructed image spectrum, and thus
 % will not move around (relative to the sub-image).
 CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 
-% setup figure
+% setup figure for plotting
 figure(1);
 subplot(1,2,1);
 subplot(1,2,2);
@@ -134,7 +136,7 @@ for iter = 1:iterations         % one per iteration
             % Replace intensity
             piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % FFT
-            % also a scale factor here
+            % also a scale factor here (maybe)
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
             objectFT(ky_low:ky_high, kx_low:kx_high) = ...
