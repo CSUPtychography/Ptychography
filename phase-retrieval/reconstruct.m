@@ -98,18 +98,14 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 %% retrieve phase iteratively
 
 % initialize object
-object = complex(zeros(object_size));
+object = complex(zeros(m_r,n_r));
 objectFT = fftshift(fft2(object));
 % interpolate on-axis image maybe?  
 
-% create list of k vectors
-% todo: center the grid on zero
-k_x = r:delta_k:object_size(2) - r;
-k_y = r:delta_k:object_size(1) - r;
-
-% prepare CTF (circle of radius r)
-[X,Y] = meshgrid(-r+1:r);
-CTF = X.^2 + Y.^2 < r^2;
+% only need to generate one CTF, since it will be applied to the sub-images
+% after they are extracted from the reconstructed image spectrum, and thus
+% will not move around (relative to the sub-image).
+CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 
 % setup figure
 figure(1);
@@ -118,10 +114,19 @@ subplot(1,2,2);
 colormap gray;
 
 for iter = 1:iterations         % one per iteration
-    for i = 1:array_size        % one per row of LEDs
-        for j = 1:array_size    % one per column of LEDs
+    for i = 1:arraysize         % one per row of LEDs
+        for j = 1:arraysize     % one per column of LEDs
+            % calculate limits
+            kx_center = round((kx_list(i) + kt_max_rec) ...
+                / 2 / kt_max_rec * (n_r - 1)) + 1;
+            ky_center = round((ky_list(j) + kt_max_rec) ...
+                / 2 / kt_max_rec * (m_r - 1)) + 1;
+            kx_low = round(kx_center - (n_s - 1) / 2);
+            kx_high = round(kx_center + (n_s - 1) / 2);
+            ky_low = round(ky_center - (m_s - 1) / 2);
+            ky_high = round(ky_center + (m_s - 1) / 2);
             % extract piece of spectrum
-            pieceFT = objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r);
+            pieceFT = objectFT(ky_low:ky_high, kx_low:kx_high);
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % iFFT
             % may need a scale factor here due to size difference
@@ -132,7 +137,7 @@ for iter = 1:iterations         % one per iteration
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(piece_replaced));
             % put it back
-            objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r) = ...
+            objectFT(ky_low:ky_high, kx_low:kx_high) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
             % display thingas
             subplot(1,2,1);
