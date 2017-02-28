@@ -53,7 +53,7 @@ k = 2 * pi / wavelength;    % wavevector magnitude
 kx_list = k * sin(atan((LED_positions + x_offset) / matrix_spacing));
 ky_list = k * sin(atan((LED_positions + y_offset) / matrix_spacing));
 
-NA_led = sin(atan(led_limit / matrix_spacing)); % NA of LEDs
+NA_led = sin(atan(LED_limit / matrix_spacing)); % NA of LEDs
 NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
 
 enhancement_factor = 2 * NA_syn / NA_obj;       % resolution increase
@@ -91,7 +91,9 @@ kx_axis_rec = linspace(-kt_max_rec,kt_max_rec,n_r);
 ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 
 % grid of spatial frequencies for each pixel of reconstructed spectrum
-[kx_g_rec,kx_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
+[kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
+% same for sub-image spectrum
+[kx_g_sub,ky_g_sub] = meshgrid(kx_axis_sub,ky_axis_sub);
 
 %% retrieve phase iteratively
 
