@@ -6,19 +6,92 @@
 
 filename = '../mock-data/mockim_r64_dk64.mat';
 
-r = 64;                     % CTF radius in pixels
-delta_k = r;                % space between adjacent images in pixels
-
-object_size = [256 256];    % final object size in pixels
-
 iterations = 5;             % number of iterations
+
+% optical parameters
+% not all of these are necessary or desirable, but we will include them all
+% now, and remove the unnecessary ones later.
+
+wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
+LED_spacing = 5e-3;     % Distance between LEDs in meters
+matrix_spacing = 70e-3; % Distance from matrix to sample in meters
+x_offset = 0;           % Distance from center of matrix to optic axis
+y_offset = 0;           % (in meters)
+arraysize = 15;         % Number of LEDs in one side of the square
+No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
+
+NA_obj = 0.08;          % Numerical aperture of the objective
+min_overlap = 50;       % (%) overlap between adjacent subimage apertures
+oversampling_factor = 1.5;  % how much over nyquist to sample
 
 %% import images and other data (?)
 
 import = load(filename);
 
 Images = import.Images;
-array_size = size(Images);
+array_dimensions = size(Images);
+[m_s,n_s] = size(Images{1});    % size of sub-images
+
+% check if array is square
+if (array_dimensions(1) ~= array_dimensions(2))
+    error('nonsquare (%d x %d) array is not supported', ...
+        array_dimensions(1), array_dimensions(2));
+else
+    arraysize = array_dimensions(1);
+end % array dimension if
+
+%% Calculated parameters
+
+% recalculate LED number just in case
+No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
+
+% position of the farthest LED
+LED_limit = LED_spacing * (arraysize - 1) / 2;
+LED_positions = -LED_limit:LED_spacing:LED_limit;   % list of LED positions
+k = 2 * pi / wavelength;    % wavevector magnitude
+% lists of transverse wavevectors
+kx_list = k * sin(atan((LED_positions + x_offset) / matrix_spacing));
+ky_list = k * sin(atan((LED_positions + y_offset) / matrix_spacing));
+
+NA_led = sin(atan(led_limit / matrix_spacing)); % NA of LEDs
+NA_syn = NA_led + NA_obj;   % synthetic numerical aperture
+
+enhancement_factor = 2 * NA_syn / NA_obj;       % resolution increase
+
+% check overlap criteria
+NA_single_led = sin(atan(LED_spacing / matrix_spacing));
+overlap = 100 - NA_single_led / 2 / NA_obj * 100; % sub-aperture % overlap
+if (overlap < min_overlap)
+    if (overlap < 0)
+        error('Sub-apertures do not overlap. Increase matrix spacing');
+    else
+        error('Sub apertures only overlap by % 3.0f%%. Increase matrix spacing.', overlap);
+    end % less than zero if
+end % overlap if
+
+% maximum spatial frequency for sub-image
+kt_max_sub = k * NA_obj * oversampling_factor;
+% and for reconstructed image
+kt_max_rec = k * 2 * NA_syn * oversampling_factor;
+% and for objective
+kt_max_obj = k * NA_obj;
+
+% calculate pixel size
+sub_px_size = pi / kt_max_sub;
+rec_px_size = pi / kt_max_rec;
+
+% calculate reconstructed image size
+m_r = ceil(m_s * kt_max_rec / kt_max_sub);
+n_r = ceil(n_s * kt_max_rec / kt_max_sub);
+
+% spatial frequency axes for spectrums of images
+kx_axis_sub = linspace(-kt_max_sub,kt_max_sub,n_s);
+ky_axis_sub = linspace(-kt_max_sub,kt_max_sub,m_s);
+kx_axis_rec = linspace(-kt_max_rec,kt_max_rec,n_r);
+ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
+
+% grid of spatial frequencies for each pixel of reconstructed spectrum
+[kx_g_rec,kx_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
 
 %% retrieve phase iteratively
 
