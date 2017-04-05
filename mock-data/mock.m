@@ -115,7 +115,7 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 %% sub image construction
 
 % perform FFT on I
-IF = fftshift(fft2(I));
+IF = fftshift(fft2(ifftshift(I)));
 
 Images = cell(arraysize);   % initialize cell array
 
@@ -144,7 +144,7 @@ for i = 1:arraysize
         blurred = blurred(ky_low:ky_high, kx_low:kx_high);
 %         imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('blurred');
         % inverse fourier transform
-        sub_image = ifft2(ifftshift(blurred));
+        sub_image = fftshift(ifft2(ifftshift(blurred)));
 %         imagesc(abs(sub_image)); title('sub-image');
         % measure intensity
         sub_image = abs(sub_image).^2;
