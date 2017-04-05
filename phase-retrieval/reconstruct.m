@@ -19,10 +19,11 @@ x_offset = 0;           % Distance from center of matrix to optic axis
 y_offset = 0;           % (in meters)
 arraysize = 15;         % Number of LEDs in one side of the square
 No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
-
 NA_obj = 0.08;          % Numerical aperture of the objective
+px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
+
+% process parameters
 min_overlap = 50;       % (%) overlap between adjacent subimage apertures
-oversampling_factor = 1.5;  % how much over nyquist to sample
 
 %% import images and other data (?)
 
@@ -70,14 +71,14 @@ if (overlap < min_overlap)
 end % overlap if
 
 % maximum spatial frequency for sub-image
-kt_max_sub = k * NA_obj * oversampling_factor;
+kt_max_sub = pi / px_size;
 % and for reconstructed image
-kt_max_rec = k * 2 * NA_syn * oversampling_factor;
+kt_max_rec = kt_max_sub * enhancement_factor;
 % and for objective
 kt_max_obj = k * NA_obj;
 
 % calculate pixel size
-sub_px_size = pi / kt_max_sub;
+sub_px_size = px_size;
 rec_px_size = pi / kt_max_rec;
 
 % calculate reconstructed image size
