@@ -40,7 +40,7 @@ array_size = size(Images);
 
 % initialize object
 object = complex(zeros(object_size));
-objectFT = fftshift(fft2(object));
+objectFT = fftshift(fft2(ifftshift(object)));
 % interpolate on-axis image maybe?  
 
 % create list of k vectors
@@ -66,12 +66,12 @@ for iter = 1:iterations         % one per iteration
             pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
             % iFFT
             % may need a scale factor here due to size difference
-            piece = ifft2(ifftshift(pieceFT_constrained));
+            piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
             % Replace intensity
             piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
             % FFT
             % also a scale factor here
-            piece_replacedFT = fftshift(fft2(piece_replaced));
+            piece_replacedFT = fftshift(fft2(ifftshift(piece_replaced)));
             % put it back
             objectFT(k_x(i)-r+1:k_x(i)+r,k_y(j)-r+1:k_y(j)+r) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
@@ -92,7 +92,7 @@ end % iteration for
 %% compute & display reconstructed object
 
 % compute
-object = ifft2(ifftshift(objectFT));
+object = fftshift(ifft2(ifftshift(objectFT)));
 % display
 figure(1)
 subplot(1,2,1);
