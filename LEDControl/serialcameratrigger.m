@@ -36,6 +36,7 @@ end
 %% Preview image
 preview(vid);
 %light LED square (middle 12 most likely)
+
 %pause for autoexposure
 mbox_preview = msgbox('Preview looks good, begin acquisition','Preview');
 uiwait(mbox_preview);
@@ -46,6 +47,9 @@ stoppreview(vid);
 %THIS WILL RUN OUT OF MEMORY IF RUN TOO MANY TIMES BEFORE CLEARING
 %allimages=LCchat(arduino,xmin,xmax,ymin,ymax,res,exp);
 %setup final image array
+
+%code to create folder to store images one at a time
+
 ImageArray = cell(x,y);
 %light first led
 
@@ -61,15 +65,18 @@ while(k<x+1)
     ImageArrayY = 1;
     while(j<y+1)
         %build cell array of images
-       % ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
+       %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
         %test to see how many times it can loop without storing images 
        Image = getsnapshot(vid);
+        %code to store in the folder made above one at a time to save
+        %memory.
+        
         %step variables
-        ImageArrayY = ImageArrayY + 1;
-        j = j + 1;
-        counter = counter+1
+       ImageArrayY = ImageArrayY + 1;
+       j = j + 1;
+       counter = counter+1
         %light next LED
-        pause(2)
+       pause(2)
     end
     ImageArrayX = ImageArrayX + 1;
     k = k + 1;
