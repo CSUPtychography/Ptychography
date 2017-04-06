@@ -9,5 +9,5 @@ vidsrc = getselectedsource(vid);
 vidsrc.ExposureAuto = 'Continuous'; %'Off', 'Once', 'Continuous'
 Flag = 1;
 mbox_cam = msgbox('Camera setup');
-uiwait(mbox)
+uiwait(mbox_cam)
 end
