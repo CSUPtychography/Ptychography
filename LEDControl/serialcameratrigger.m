@@ -45,6 +45,8 @@ stoppreview(vid);
 % setup
 %% Image Acquisition, storage in cell array in x and y slots
 %THIS WILL RUN OUT OF MEMORY IF RUN TOO MANY TIMES BEFORE CLEARING
+    %not running out of memory, when the images aren't stored, it still
+    %runs into a problem at 80 loops
 %allimages=LCchat(arduino,xmin,xmax,ymin,ymax,res,exp);
 %setup final image array
 
