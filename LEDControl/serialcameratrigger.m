@@ -28,7 +28,7 @@ end
 %Creates a camera element, and returns the camera information for the
 %attached camera
 if(~exist('cameraFlag','var'))
-    [vid,vidsrc,cameraFlag] = camerasetup;
+    [vid,cameraFlag] = camerasetup();
 elseif(exist('cameraFlag','var'))
     cam_setup = msgbox('Camera is already setup','Camera');
     uiwait(cam_setup);
@@ -40,7 +40,7 @@ preview(vid);
 %pause for autoexposure
 mbox_preview = msgbox('Preview looks good, begin acquisition','Preview');
 uiwait(mbox_preview);
-stoppreview(vid);
+closepreview(vid);
 %% if the next part fails, use imaqreset, then delete cameraFlag and re-run
 % setup
 %% Image Acquisition, storage in cell array in x and y slots
@@ -69,7 +69,7 @@ while(k<x+1)
         %build cell array of images
        %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
         %test to see how many times it can loop without storing images 
-       Image = getsnapshot(vid);
+       Image = step(vid);
         %code to store in the folder made above one at a time to save
         %memory.
         

@@ -6,7 +6,7 @@ j = 100;
 for i = 1:j
     out = serialpass(arduino,trigger,x,y); %returns whether or not the LED was triggered
     if out == 1                            %test if Led was triggered
-        image(x,y) = takephoto(res,exp);        %returns the image for array x,y
+        images{x,y} = takephoto(vid);        %returns the image for array x,y
     else
         i = i-1;                            %re-triggers the LED to switch
     end
