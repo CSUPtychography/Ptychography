@@ -11,6 +11,23 @@ ymax = 11;                          %define ending y for array
 x = xmax - xmin;
 y = ymax - ymin;
 n = x*y;
+
+% optical parameters
+wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
+LED_spacing = 5e-3;     % Distance between LEDs in meters
+matrix_spacing = 70e-3; % Distance from matrix to sample in meters
+x_offset = 0;           % Distance from center of matrix to optic axis
+y_offset = 0;           % (in meters)
+arraysize = 15;         % Number of LEDs in one side of the square
+No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
+NA_obj = 0.08;          % Numerical aperture of the objective
+px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
+
+% x = arraysize;
+% y = arraysize;
+% n = No_LEDs
+
+% serial and camera parameters
 trigger = '1';                      %define serial communication trigger
 comPort = 'COM6';                   %define serial port (this may change each time)
 %res = 1080;                        %define resolution of camera (may not need to do this)
