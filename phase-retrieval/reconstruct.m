@@ -4,9 +4,10 @@
 
 %% Parameters and constants
 
+% process parameters
+min_overlap = 50;       % (%) overlap between adjacent subimage apertures
+iterations = 5;         % number of iterations
 filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
-
-iterations = 5;             % number of iterations
 
 % optical parameters
 % will be overwritten by data import
@@ -20,8 +21,6 @@ No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
 NA_obj = 0.08;          % Numerical aperture of the objective
 px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
 
-% process parameters
-min_overlap = 50;       % (%) overlap between adjacent subimage apertures
 
 %% import images and other data
 
