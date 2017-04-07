@@ -164,14 +164,25 @@ for iter = 1:iterations         % one per iteration
             objectFT(ky_low:ky_high, kx_low:kx_high) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
             % display thingas
-            subplot(1,2,1);
+            subplot(2,2,1);
             imagesc(Images{i,j});
             axis image;
             title('sub-image');
-            subplot(1,2,2);
-            imagesc(angle(objectFT));
+            subplot(2,2,2);
+            imagesc(log(abs(objectFT)));
             axis image;
+            xlim([n_r/4, n_r*3/4]);
+            ylim([m_r/4, m_r*3/4]);
             title('object Fourier Transform');
+            object = fftshift(ifft2(ifftshift(objectFT)));
+            subplot(2,2,3);
+            imagesc(abs(object));
+            axis image;
+            title('Reconstructed object magnitude');
+            subplot(2,2,4);
+            imagesc(angle(object));
+            axis image;
+            title('Reconstructed object phase');
             drawnow;
         end % column for
     end % row for
