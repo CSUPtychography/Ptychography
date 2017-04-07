@@ -50,7 +50,11 @@ closepreview(vid);
 %allimages=LCchat(arduino,xmin,xmax,ymin,ymax,res,exp);
 %setup final image array
 
-%code to create folder to store images one at a time
+% create directory to store files
+directory = datestr(now,'yyyy-mm-dd_HH-MM-SS');
+mkdir(directory);
+% format string for image filenames
+fileformat = strcat(directory, '/image-x%d_y%d');
 
 ImageArray = cell(x,y);
 %light first led
@@ -70,8 +74,8 @@ while(k<x+1)
        %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
         %test to see how many times it can loop without storing images 
        Image = step(vid);
-        %code to store in the folder made above one at a time to save
-        %memory.
+        % save image for memory conservation
+        save(sprintf(fileformat,ImageArrayX,ImageArrayY), 'Image');
         
         %step variables
        ImageArrayY = ImageArrayY + 1;
