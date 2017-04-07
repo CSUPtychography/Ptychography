@@ -32,7 +32,7 @@ if(~exist('cameraFlag','var'))
 elseif(exist('cameraFlag','var'))
     cam_setup = msgbox('Camera is already setup','Camera');
     uiwait(cam_setup);
-end  
+end
 %% Preview image
 preview(vid);
 %light LED square (middle 12 most likely)
@@ -67,18 +67,18 @@ while(k<x+1)
     ImageArrayY = 1;
     while(j<y+1)
         %build cell array of images
-       %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
-        %test to see how many times it can loop without storing images 
-       Image = step(vid);
+        %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
+        %test to see how many times it can loop without storing images
+        Image = step(vid);
         %code to store in the folder made above one at a time to save
         %memory.
-        
+
         %step variables
-       ImageArrayY = ImageArrayY + 1;
-       j = j + 1;
-       counter = counter+1
+        ImageArrayY = ImageArrayY + 1;
+        j = j + 1;
+        counter = counter+1
         %light next LED
-       pause(2)
+        pause(2)
     end
     ImageArrayX = ImageArrayX + 1;
     k = k + 1;
