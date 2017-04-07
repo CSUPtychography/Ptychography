@@ -71,7 +71,14 @@ closepreview(vid);
 directory = datestr(now,'yyyy-mm-dd_HH-MM-SS');
 mkdir(directory);
 % format string for image filenames
-fileformat = strcat(directory, '/image-x%d_y%d');
+fileformat = 'image-x%d_y%d';
+fullformat = strcat(directory, '/', fileformat);
+% save parameters in directory
+param_filename = strcat(directory, '/parameters');
+version = 2;
+save(param_filename, 'version', 'fileformat', ...
+    'LED_spacing', 'matrix_spacing', 'x_offset', 'y_offset', ...
+    'wavelength', 'NA_obj', 'px_size');
 
 ImageArray = cell(x,y);
 %light first led
@@ -92,7 +99,7 @@ while(k<x+1)
         %test to see how many times it can loop without storing images 
        Image = step(vid);
         % save image for memory conservation
-        save(sprintf(fileformat,ImageArrayX,ImageArrayY), 'Image');
+        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
         
         %step variables
        ImageArrayY = ImageArrayY + 1;
