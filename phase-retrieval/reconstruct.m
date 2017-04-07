@@ -4,14 +4,12 @@
 
 %% Parameters and constants
 
-filename = '../mock-data/mockim_r64_dk64.mat';
+filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
 
 iterations = 5;             % number of iterations
 
 % optical parameters
-% not all of these are necessary or desirable, but we will include them all
-% now, and remove the unnecessary ones later.
-
+% will be overwritten by data import
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
 LED_spacing = 5e-3;     % Distance between LEDs in meters
 matrix_spacing = 70e-3; % Distance from matrix to sample in meters
@@ -25,7 +23,7 @@ px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
 % process parameters
 min_overlap = 50;       % (%) overlap between adjacent subimage apertures
 
-%% import images and other data (?)
+%% import images and other data
 
 import = load(filename);
 
@@ -40,18 +38,21 @@ catch ME
     ME.rethrow;
 end % version try/catch
 
-if version ~= 0
-    error('This algorithm is incompatible with file version %d.',version);
+if version ~= 1
+    error('This algorithm is incompatible with file version %d.', version);
 end % version if
 
-r = import.r;                   % CTF radius in pixels
-delta_k = import.delta_k;       % space between adjacent images in pixels
-
-object_size = import.rec_size;  % final object size in pixels
-
+wavelength = import.wavelength;
+LED_spacing = import.LED_spacing;
+matrix_spacing = import.matrix_spacing;
+x_offset = import.x_offset;
+y_offset = import.y_offset;
+NA_obj = import.NA_obj;
+px_size = import.px_size;
 Images = import.Images;
-array_dimensions = size(Images);
+
 [m_s,n_s] = size(Images{1});    % size of sub-images
+array_dimensions = size(Images);
 
 % check if array is square
 if (array_dimensions(1) ~= array_dimensions(2))

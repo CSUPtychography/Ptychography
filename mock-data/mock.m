@@ -38,11 +38,8 @@ end
 
 % handle weak phase
 if weak_phase
-    % string with parameters for filename
-    % paramstr = sprintf('r%d_dk%d_weak-phase',r,delta_k_px);
     phase_factor = weak_phase_factor;
 else
-    % paramstr = sprintf('r%d_dk%d',r,delta_k_px);
     phase_factor = 1;
 end % weak phase if
 
@@ -107,11 +104,6 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 % grid of spatial frequencies for each pixel of reconstructed spectrum
 [kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
 
-% add magnitude and phase source indicators to filename
-% paramstr = strcat(magnitude_file(1), '_', phase_file(1), '_', paramstr);
-%
-% filename = strcat('mockim_', paramstr);
-
 %% sub image construction
 
 % perform FFT on I
@@ -153,5 +145,35 @@ for i = 1:arraysize
     end % ky for
 end % kx for
 
-%% save images
-% save(filename,'Images');
+%% save data
+
+% Generate filename with parameters
+% example filename: mock_ab_1x2_3_4_5_6_7_w50
+% a: 1st letter of magnitude filename
+% b: 1st letter of phase filename
+% 1: height of object in 100s of pixels
+% 2: width of object in 100s of pixels
+% 3: LED_spacing in mm
+% 4: matrix_spacing in cm
+% 5: array size (on a side)
+% 6: wavelength in 100s of nm
+% 7: Numerical aperture in 100ths
+% w: indicates weak phase
+% 50: phase factor in 100ths if weak phase used
+
+filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
+    magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
+    LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
+    wavelength*1e7, NA_obj*100);
+if weak_phase
+    filename = strcat(filename, sprintf('_w%.0f', phase_factor*1e2));
+end % filename weak phase if
+
+% save file
+version = 1;
+rec_size = [m_r,n_r];
+px_size = sub_px_size;
+
+save(filename,'version', 'LED_spacing', 'matrix_spacing', ...
+    'x_offset', 'y_offset', ...
+    'wavelength', 'NA_obj', 'px_size', 'Images');
