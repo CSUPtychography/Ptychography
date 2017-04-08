@@ -94,24 +94,19 @@ n = x*y;
 while(k<x+1)
     j = 1;
     ImageArrayY = 1;
-    while(j<y+1)
-       %build cell array of images
-       %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
-       %test to see how many times it can loop without storing images 
+    while(j<y+1) 
        Image = takephoto(vid);
        % save image for memory conservation
        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
        %step variables
        ImageArrayY = ImageArrayY + 1;
        j = j + 1;
-        %light next LED
-       pause(2)
+       %light next LED, pause for autoexposure
+       pause(.5)
     end
     ImageArrayX = ImageArrayX + 1;
     k = k + 1;
 end
-%% Send the images as a cell array to file for FPM
-%ImageArray = allimages;
 %% End the session
 % Clean the drivers off
 make clean;
