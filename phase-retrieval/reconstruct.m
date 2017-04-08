@@ -149,55 +149,55 @@ i_seq = ig(:); j_seq = jg(:);
 
 for iter = 1:iterations         % one per iteration
     for LED = 1:No_LEDs
-            % calculate limits
-            kx_center = round((kx_list(i_seq(LED)) + kt_max_rec) ...
-                / 2 / kt_max_rec * (n_r - 1)) + 1;
-            ky_center = round((ky_list(j_seq(LED)) + kt_max_rec) ...
-                / 2 / kt_max_rec * (m_r - 1)) + 1;
-            kx_low = round(kx_center - (n_s - 1) / 2);
-            kx_high = round(kx_center + (n_s - 1) / 2);
-            ky_low = round(ky_center - (m_s - 1) / 2);
-            ky_high = round(ky_center + (m_s - 1) / 2);
-            % extract piece of spectrum
-            pieceFT = objectFT(ky_low:ky_high, kx_low:kx_high);
-            pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
-            % iFFT
-            % may need a scale factor here due to size difference
-            piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
-            % Replace intensity
-            piece_replaced = sqrt(Images{i_seq(LED),j_seq(LED)}) ...
-                .* exp(1i * angle(piece));
-            % FFT
-            % also a scale factor here
-            piece_replacedFT = fftshift(fft2(ifftshift(piece_replaced)));
-            % put it back
-            objectFT(ky_low:ky_high, kx_low:kx_high) = ...
-                piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
-            % display thingas
-            if plotprogress
-                if plotobject, subplot(2,2,1), else subplot(1,2,1), end
-                imagesc(Images{i_seq(LED),j_seq(LED)});
+        % calculate limits
+        kx_center = round((kx_list(i_seq(LED)) + kt_max_rec) ...
+            / 2 / kt_max_rec * (n_r - 1)) + 1;
+        ky_center = round((ky_list(j_seq(LED)) + kt_max_rec) ...
+            / 2 / kt_max_rec * (m_r - 1)) + 1;
+        kx_low = round(kx_center - (n_s - 1) / 2);
+        kx_high = round(kx_center + (n_s - 1) / 2);
+        ky_low = round(ky_center - (m_s - 1) / 2);
+        ky_high = round(ky_center + (m_s - 1) / 2);
+        % extract piece of spectrum
+        pieceFT = objectFT(ky_low:ky_high, kx_low:kx_high);
+        pieceFT_constrained = pieceFT .* CTF;   % apply size constraint
+        % iFFT
+        % may need a scale factor here due to size difference
+        piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
+        % Replace intensity
+        piece_replaced = sqrt(Images{i_seq(LED),j_seq(LED)}) ...
+            .* exp(1i * angle(piece));
+        % FFT
+        % also a scale factor here
+        piece_replacedFT = fftshift(fft2(ifftshift(piece_replaced)));
+        % put it back
+        objectFT(ky_low:ky_high, kx_low:kx_high) = ...
+            piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
+        % display thingas
+        if plotprogress
+            if plotobject, subplot(2,2,1), else subplot(1,2,1), end
+            imagesc(Images{i_seq(LED),j_seq(LED)});
+            axis image;
+            title('sub-image');
+            if plotobject, subplot(2,2,2), else subplot(1,2,2), end
+            imagesc(log(abs(objectFT)));
+            axis image;
+            xlim([n_r/4, n_r*3/4]);
+            ylim([m_r/4, m_r*3/4]);
+            title('object Fourier Transform');
+            if plotobject
+                object = fftshift(ifft2(ifftshift(objectFT)));
+                subplot(2,2,3);
+                imagesc(abs(object));
                 axis image;
-                title('sub-image');
-                if plotobject, subplot(2,2,2), else subplot(1,2,2), end
-                imagesc(log(abs(objectFT)));
+                title('Reconstructed object magnitude');
+                subplot(2,2,4);
+                imagesc(angle(object));
                 axis image;
-                xlim([n_r/4, n_r*3/4]);
-                ylim([m_r/4, m_r*3/4]);
-                title('object Fourier Transform');
-                if plotobject
-                    object = fftshift(ifft2(ifftshift(objectFT)));
-                    subplot(2,2,3);
-                    imagesc(abs(object));
-                    axis image;
-                    title('Reconstructed object magnitude');
-                    subplot(2,2,4);
-                    imagesc(angle(object));
-                    axis image;
-                    title('Reconstructed object phase');
-                end % plotobject if
-                drawnow;
-             end % plotprogress if
+                title('Reconstructed object phase');
+            end % plotobject if
+            drawnow;
+         end % plotprogress if
     end % LED for
 end % iteration for
 
