@@ -4,10 +4,10 @@
 % Save the serial port name in comPort variable.
 % define variables
 %% set variables for size of array
-xmin = 1;                           %define starting x for array
-ymin = 1;                           %define starting y for array
-xmax = 10;                          %define ending x for array
-ymax = 11;                          %define ending y for array
+xmin = 0;                           %define starting x for array
+ymin = 0;                           %define starting y for array
+xmax = 15;                          %define ending x for array
+ymax = 15;                          %define ending y for array
 x = xmax - xmin;
 y = ymax - ymin;
 n = x*y;
@@ -52,8 +52,6 @@ elseif(exist('cameraFlag','var'))
 end  
 %% Preview image
 preview(vid);
-%light LED square (middle 12 most likely)
-
 %pause for autoexposure
 mbox_preview = msgbox('Preview looks good, begin acquisition','Preview');
 uiwait(mbox_preview);
@@ -84,29 +82,36 @@ Prev = takephoto(vid);
 % save Preview
 save(sprintf(previewfullformat,x,y), 'Prev');
 %light first led
-
+serialpass(arduino,trigger);
 %setup while loop variables
 ImageArrayX = 1;
 ImageArrayY = 1;
 k = 1;
 n = x*y;
 %for loop
-while(k<x+1)
+while(k<=x)
     j = 1;
     ImageArrayY = 1;
-    while(j<y+1) 
+    while(j<=y) 
        Image = takephoto(vid);
+       imagesc(Image);
        % save image for memory conservation
        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
        %step variables
        ImageArrayY = ImageArrayY + 1;
        j = j + 1;
        %light next LED, pause for autoexposure
-       pause(.5)
+       serialpass(arduino,trigger);
+       pause(.2)
     end
     ImageArrayX = ImageArrayX + 1;
     k = k + 1;
 end
+%% run this section to restart image acquisition
+fclose(arduino)
+clear cameraFlag;
+clear serialFlag;
+clear vid;
 %% End the session
 % Clean the drivers off
 make clean;
