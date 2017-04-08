@@ -7,6 +7,7 @@
 % process parameters
 min_overlap = 50;       % (%) overlap between adjacent subimage apertures
 iterations = 5;         % number of iterations
+spiral = true;          % whether to spiral through LED positions
 % whether and what to display data at every step
 % severely decreases performance
 % plotprogress overrides plotobject
@@ -142,10 +143,19 @@ subplot(1,2,2);
 colormap gray;
 
 % generate sequence of indices
-% first make grids
-[ig,jg] = meshgrid(1:arraysize);
-% unwrap into sequences
-i_seq = ig(:); j_seq = jg(:);
+if spiral
+    % spiral scan
+    [i_seq,j_seq] = squiral(No_LEDs);
+    % shift to positive values
+    i_seq = i_seq - min(i_seq) + 1;
+    j_seq = j_seq - min(j_seq) + 1;
+else
+    % sequential scan
+    % first make grids
+    [ig,jg] = meshgrid(1:arraysize);
+    % unwrap into sequences
+    i_seq = ig(:); j_seq = jg(:);
+end % spiral if
 
 for iter = 1:iterations         % one per iteration
     for LED = 1:No_LEDs
