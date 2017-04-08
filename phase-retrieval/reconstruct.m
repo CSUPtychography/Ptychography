@@ -141,13 +141,18 @@ subplot(1,2,1);
 subplot(1,2,2);
 colormap gray;
 
+% generate sequence of indices
+% first make grids
+[ig,jg] = meshgrid(1:arraysize);
+% unwrap into sequences
+i_seq = ig(:); j_seq = jg(:);
+
 for iter = 1:iterations         % one per iteration
-    for i = 1:arraysize         % one per row of LEDs
-        for j = 1:arraysize     % one per column of LEDs
+    for LED = 1:No_LEDs
             % calculate limits
-            kx_center = round((kx_list(i) + kt_max_rec) ...
+            kx_center = round((kx_list(i_seq(LED)) + kt_max_rec) ...
                 / 2 / kt_max_rec * (n_r - 1)) + 1;
-            ky_center = round((ky_list(j) + kt_max_rec) ...
+            ky_center = round((ky_list(j_seq(LED)) + kt_max_rec) ...
                 / 2 / kt_max_rec * (m_r - 1)) + 1;
             kx_low = round(kx_center - (n_s - 1) / 2);
             kx_high = round(kx_center + (n_s - 1) / 2);
@@ -160,7 +165,8 @@ for iter = 1:iterations         % one per iteration
             % may need a scale factor here due to size difference
             piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
             % Replace intensity
-            piece_replaced = sqrt(Images{i,j}) .* exp(1i * angle(piece));
+            piece_replaced = sqrt(Images{i_seq(LED),j_seq(LED)}) ...
+                .* exp(1i * angle(piece));
             % FFT
             % also a scale factor here
             piece_replacedFT = fftshift(fft2(ifftshift(piece_replaced)));
@@ -170,7 +176,7 @@ for iter = 1:iterations         % one per iteration
             % display thingas
             if plotprogress
                 if plotobject, subplot(2,2,1), else subplot(1,2,1), end
-                imagesc(Images{i,j});
+                imagesc(Images{i_seq(LED),j_seq(LED)});
                 axis image;
                 title('sub-image');
                 if plotobject, subplot(2,2,2), else subplot(1,2,2), end
@@ -192,8 +198,7 @@ for iter = 1:iterations         % one per iteration
                 end % plotobject if
                 drawnow;
              end % plotprogress if
-        end % column for
-    end % row for
+    end % LED for
 end % iteration for
 
 %% compute & display reconstructed object
