@@ -2,6 +2,16 @@
 % This script takes any two images, and creates sub-images with
 % less resolution, to act as mock data for ptychography
 
+%### This is a special version for debugging the reconstruction problems
+
+% Turns out that calculating the CTF in object spatial frequency space
+% instead of subimage frequency space results in a CTF that is in a
+% slightly different spot for each subimag.  Watch how it moves around
+% when the algorithm runs.
+% A better way to do it is to just calculate
+% the CTF in subimage frequency space, and apply it after cropping out
+% the region of interest.
+
 %% parameters
 magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
@@ -106,6 +116,14 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 
 %% sub image construction
 
+% special colormap for viewing CTF
+% anything above zero will show up white
+cmap = [0 0 0; repmat([1 1 1],999,1)];
+% figure for viewing CTF
+figure();
+colormap(cmap);
+
+
 % perform FFT on I
 IF = fftshift(fft2(ifftshift(I)));
 
@@ -134,7 +152,8 @@ for i = 1:arraysize
         ky_low = round(ky_center - (m_s - 1) / 2);
         ky_high = round(ky_center + (m_s - 1) / 2);
         blurred = blurred(ky_low:ky_high, kx_low:kx_high);
-%         imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('blurred');
+        imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('Approx. CTF');
+        drawnow;
         % inverse fourier transform
         sub_image = fftshift(ifft2(ifftshift(blurred)));
 %         imagesc(abs(sub_image)); title('sub-image');
@@ -161,19 +180,20 @@ end % kx for
 % w: indicates weak phase
 % 50: phase factor in 100ths if weak phase used
 
-filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
-    magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
-    LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
-    wavelength*1e7, NA_obj*100);
-if weak_phase
-    filename = strcat(filename, sprintf('_w%.0f', phase_factor*1e2));
-end % filename weak phase if
-
-% save file
-version = 1;
-rec_size = [m_r,n_r];
-px_size = sub_px_size;
-
-save(filename,'version', 'LED_spacing', 'matrix_spacing', ...
-    'x_offset', 'y_offset', ...
-    'wavelength', 'NA_obj', 'px_size', 'Images');
+%### Disable saving for this debug version
+% filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
+%     magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
+%     LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
+%     wavelength*1e7, NA_obj*100);
+% if weak_phase
+%     filename = strcat(filename, sprintf('_w%.0f', phase_factor*1e2));
+% end % filename weak phase if
+%
+% % save file
+% version = 1;
+% rec_size = [m_r,n_r];
+% px_size = sub_px_size;
+%
+% save(filename,'version', 'LED_spacing', 'matrix_spacing', ...
+%     'x_offset', 'y_offset', ...
+%     'wavelength', 'NA_obj', 'px_size', 'Images');
