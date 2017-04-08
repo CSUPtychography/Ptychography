@@ -6,7 +6,7 @@
 
 % process parameters
 min_overlap = 50;       % (%) overlap between adjacent subimage apertures
-iterations = 5;         % number of iterations
+iterations = 1;         % number of iterations
 % whether and what to display data at every step
 % severely decreases performance
 % plotprogress overrides plotobject
@@ -166,11 +166,11 @@ for iter = 1:iterations         % one per iteration
             piece_replacedFT = fftshift(fft2(ifftshift(piece_replaced)));
             % put it back
             objectFT(ky_low:ky_high, kx_low:kx_high) = ...
-                piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
+                Images{i,j} .* CTF + pieceFT .* (1 - CTF);
             % display thingas
             if plotprogress
                 if plotobject, subplot(2,2,1), else subplot(1,2,1), end
-                imagesc(Images{i,j});
+                imagesc(abs(Images{i,j}));
                 axis image;
                 title('sub-image');
                 if plotobject, subplot(2,2,2), else subplot(1,2,2), end
