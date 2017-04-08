@@ -2,16 +2,6 @@
 % This script takes any two images, and creates sub-images with
 % less resolution, to act as mock data for ptychography
 
-%### This is a special version for debugging the reconstruction problems
-
-% Turns out that calculating the CTF in object spatial frequency space
-% instead of subimage frequency space results in a CTF that is in a
-% slightly different spot for each subimag.  Watch how it moves around
-% when the algorithm runs.
-% A better way to do it is to just calculate
-% the CTF in subimage frequency space, and apply it after cropping out
-% the region of interest.
-
 %% parameters
 magnitude_file = 'cameraman.png';
 phase_file = 'lena.png';
@@ -116,32 +106,15 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 
 %% sub image construction
 
-% special colormap for viewing CTF
-% anything above zero will show up white
-cmap = [0 0 0; repmat([1 1 1],999,1)];
-% figure for viewing CTF
-figure();
-colormap(cmap);
-
-
 % perform FFT on I
 IF = fftshift(fft2(ifftshift(I)));
 
 Images = cell(arraysize);   % initialize cell array
 
-% synthetic_CTF = false(m_r,n_r);
+CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 
 for i = 1:arraysize
     for j = 1:arraysize
-        % prepare transfer function
-        % it's a circle of radius kt_max_obj with center (kx,ky)
-        CTF = ((kx_g_rec - kx_list(i)).^2 ...
-            + (ky_g_rec - ky_list(j)).^2) < kt_max_obj^2;
-%         imagesc(kx_axis_rec,ky_axis_rec,abs(CTF)); title('CTF');
-%         synthetic_CTF = synthetic_CTF | CTF;
-        % multiply transfer function by FFt'd image
-        blurred = CTF .* IF;
-%         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % crop out region of interest
         kx_center = round((kx_list(i) + kt_max_rec) ...
             / 2 / kt_max_rec * (n_r - 1)) + 1;
@@ -151,9 +124,11 @@ for i = 1:arraysize
         kx_high = round(kx_center + (n_s - 1) / 2);
         ky_low = round(ky_center - (m_s - 1) / 2);
         ky_high = round(ky_center + (m_s - 1) / 2);
-        blurred = blurred(ky_low:ky_high, kx_low:kx_high);
-        imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('Approx. CTF');
-        drawnow;
+        region = IF(ky_low:ky_high, kx_low:kx_high);
+%         imagesc(kx_axis_sub,ky_axis_sub,abs(region)); title('Subregion');
+        % multiply transfer function by FFt'd image
+        blurred = CTF .* region;
+%         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % inverse fourier transform
         sub_image = fftshift(ifft2(ifftshift(blurred)));
 %         imagesc(abs(sub_image)); title('sub-image');
@@ -161,6 +136,7 @@ for i = 1:arraysize
         sub_image = abs(sub_image).^2;
         % store in cell array
         Images{j,i} = sub_image;
+        drawnow;
     end % ky for
 end % kx for
 
@@ -180,20 +156,19 @@ end % kx for
 % w: indicates weak phase
 % 50: phase factor in 100ths if weak phase used
 
-%### Disable saving for this debug version
-% filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
-%     magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
-%     LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
-%     wavelength*1e7, NA_obj*100);
-% if weak_phase
-%     filename = strcat(filename, sprintf('_w%.0f', phase_factor*1e2));
-% end % filename weak phase if
-%
-% % save file
-% version = 1;
-% rec_size = [m_r,n_r];
-% px_size = sub_px_size;
-%
-% save(filename,'version', 'LED_spacing', 'matrix_spacing', ...
-%     'x_offset', 'y_offset', ...
-%     'wavelength', 'NA_obj', 'px_size', 'Images');
+filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
+    magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
+    LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
+    wavelength*1e7, NA_obj*100);
+if weak_phase
+    filename = strcat(filename, sprintf('_w%.0f', phase_factor*1e2));
+end % filename weak phase if
+
+% save file
+version = 1;
+rec_size = [m_r,n_r];
+px_size = sub_px_size;
+
+save(filename,'version', 'LED_spacing', 'matrix_spacing', ...
+    'x_offset', 'y_offset', ...
+    'wavelength', 'NA_obj', 'px_size', 'Images');
