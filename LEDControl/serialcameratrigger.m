@@ -95,6 +95,7 @@ while(k<=x)
     while(j<=y) 
        Image = takephoto(vid);
        imagesc(Image);
+       colormap gray;
        % save image for memory conservation
        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
        %step variables
@@ -115,5 +116,3 @@ clear vid;
 %% End the session
 % Clean the drivers off
 make clean;
-% Close the serial port
-fclose(arduino);
