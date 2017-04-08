@@ -111,19 +111,10 @@ IF = fftshift(fft2(ifftshift(I)));
 
 Images = cell(arraysize);   % initialize cell array
 
-% synthetic_CTF = false(m_r,n_r);
+CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 
 for i = 1:arraysize
     for j = 1:arraysize
-        % prepare transfer function
-        % it's a circle of radius kt_max_obj with center (kx,ky)
-        CTF = ((kx_g_rec - kx_list(i)).^2 ...
-            + (ky_g_rec - ky_list(j)).^2) < kt_max_obj^2;
-%         imagesc(kx_axis_rec,ky_axis_rec,abs(CTF)); title('CTF');
-%         synthetic_CTF = synthetic_CTF | CTF;
-        % multiply transfer function by FFt'd image
-        blurred = CTF .* IF;
-%         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % crop out region of interest
         kx_center = round((kx_list(i) + kt_max_rec) ...
             / 2 / kt_max_rec * (n_r - 1)) + 1;
@@ -133,8 +124,11 @@ for i = 1:arraysize
         kx_high = round(kx_center + (n_s - 1) / 2);
         ky_low = round(ky_center - (m_s - 1) / 2);
         ky_high = round(ky_center + (m_s - 1) / 2);
-        blurred = blurred(ky_low:ky_high, kx_low:kx_high);
-%         imagesc(kx_axis_sub,ky_axis_sub,abs(blurred)); title('blurred');
+        region = IF(ky_low:ky_high, kx_low:kx_high);
+%         imagesc(kx_axis_sub,ky_axis_sub,abs(region)); title('Subregion');
+        % multiply transfer function by FFt'd image
+        blurred = CTF .* region;
+%         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
         % inverse fourier transform
         sub_image = fftshift(ifft2(ifftshift(blurred)));
 %         imagesc(abs(sub_image)); title('sub-image');
@@ -142,6 +136,7 @@ for i = 1:arraysize
         sub_image = abs(sub_image).^2;
         % store in cell array
         Images{j,i} = sub_image;
+        drawnow;
     end % ky for
 end % kx for
 
