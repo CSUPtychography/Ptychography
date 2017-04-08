@@ -8,6 +8,6 @@ vid = imaq.VideoDevice();
 vid.DeviceProperties.ExposureAuto = 'Continuous';
 vid.ReturnedDataType = 'double';
 Flag = 1;
-% mbox_cam = msgbox('Camera setup');
-% uiwait(mbox_cam)
+mbox_cam = msgbox('Camera setup','Camera');
+uiwait(mbox_cam)
 end
