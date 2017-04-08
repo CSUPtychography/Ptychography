@@ -135,7 +135,7 @@ for i = 1:arraysize
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
-        Images{i,j} = blurred;
+        Images{i,j} = sub_image;
         drawnow;
     end % ky for
 end % kx for
