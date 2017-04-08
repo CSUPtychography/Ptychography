@@ -61,9 +61,7 @@ closepreview(vid);
 %% if the next part fails, use imaqreset, then delete cameraFlag and re-run
 % setup
 %% Image Acquisition, storage in cell array in x and y slots
-%THIS WILL RUN OUT OF MEMORY IF RUN TOO MANY TIMES BEFORE CLEARING
-    %not running out of memory, when the images aren't stored, it still
-    %runs into a problem at 80 loops
+
 %allimages=LCchat(arduino,xmin,xmax,ymin,ymax,res,exp);
 %setup final image array
 
@@ -72,39 +70,40 @@ directory = datestr(now,'yyyy-mm-dd_HH-MM-SS');
 mkdir(directory);
 % format string for image filenames
 fileformat = 'image-x%d_y%d';
+previewfileformat = 'preview-%dx%d';
 fullformat = strcat(directory, '/', fileformat);
+previewfullformat = strcat(directory, '/', previewfileformat);
 % save parameters in directory
 param_filename = strcat(directory, '/parameters');
 version = 2;
 save(param_filename, 'version', 'fileformat', ...
     'LED_spacing', 'matrix_spacing', 'x_offset', 'y_offset', ...
     'wavelength', 'NA_obj', 'px_size');
-
-ImageArray = cell(x,y);
+%Create Preview Image to Compare reconstruction to
+Prev = takephoto(vid);
+% save Preview
+save(sprintf(previewfullformat,x,y), 'Prev');
 %light first led
 
 %setup while loop variables
 ImageArrayX = 1;
 ImageArrayY = 1;
 k = 1;
-counter = 1
 n = x*y;
 %for loop
 while(k<x+1)
     j = 1;
     ImageArrayY = 1;
     while(j<y+1)
-        %build cell array of images
+       %build cell array of images
        %ImageArray{ImageArrayY,ImageArrayX} = takephoto(vid,vidsrc);
-        %test to see how many times it can loop without storing images 
-       Image = step(vid);
-        % save image for memory conservation
-        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
-        
-        %step variables
+       %test to see how many times it can loop without storing images 
+       Image = takephoto(vid);
+       % save image for memory conservation
+       save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
+       %step variables
        ImageArrayY = ImageArrayY + 1;
        j = j + 1;
-       counter = counter+1
         %light next LED
        pause(2)
     end
