@@ -116,9 +116,9 @@ CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 for i = 1:arraysize
     for j = 1:arraysize
         % crop out region of interest
-        kx_center = round((kx_list(i) + kt_max_rec) ...
+        kx_center = round((kx_list(j) + kt_max_rec) ...
             / 2 / kt_max_rec * (n_r - 1)) + 1;
-        ky_center = round((ky_list(j) + kt_max_rec) ...
+        ky_center = round((ky_list(i) + kt_max_rec) ...
             / 2 / kt_max_rec * (m_r - 1)) + 1;
         kx_low = round(kx_center - (n_s - 1) / 2);
         kx_high = round(kx_center + (n_s - 1) / 2);
@@ -135,7 +135,7 @@ for i = 1:arraysize
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
-        Images{j,i} = sub_image;
+        Images{i,j} = sub_image;
         drawnow;
     end % ky for
 end % kx for

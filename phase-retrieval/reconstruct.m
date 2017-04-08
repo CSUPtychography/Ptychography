@@ -4,9 +4,15 @@
 
 %% Parameters and constants
 
+% process parameters
+min_overlap = 50;       % (%) overlap between adjacent subimage apertures
+iterations = 5;         % number of iterations
+% whether and what to display data at every step
+% severely decreases performance
+% plotprogress overrides plotobject
+plotprogress = true;    % display data at every step if true
+plotobject = true;      % plot object in addition to spectrum if true
 filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
-
-iterations = 5;             % number of iterations
 
 % optical parameters
 % will be overwritten by data import
@@ -20,8 +26,6 @@ No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
 NA_obj = 0.08;          % Numerical aperture of the objective
 px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
 
-% process parameters
-min_overlap = 50;       % (%) overlap between adjacent subimage apertures
 
 %% import images and other data
 
@@ -141,9 +145,9 @@ for iter = 1:iterations         % one per iteration
     for i = 1:arraysize         % one per row of LEDs
         for j = 1:arraysize     % one per column of LEDs
             % calculate limits
-            kx_center = round((kx_list(i) + kt_max_rec) ...
+            kx_center = round((kx_list(j) + kt_max_rec) ...
                 / 2 / kt_max_rec * (n_r - 1)) + 1;
-            ky_center = round((ky_list(j) + kt_max_rec) ...
+            ky_center = round((ky_list(i) + kt_max_rec) ...
                 / 2 / kt_max_rec * (m_r - 1)) + 1;
             kx_low = round(kx_center - (n_s - 1) / 2);
             kx_high = round(kx_center + (n_s - 1) / 2);
@@ -164,15 +168,30 @@ for iter = 1:iterations         % one per iteration
             objectFT(ky_low:ky_high, kx_low:kx_high) = ...
                 piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
             % display thingas
-            subplot(1,2,1);
-            imagesc(Images{i,j});
-            axis image;
-            title('sub-image');
-            subplot(1,2,2);
-            imagesc(angle(objectFT));
-            axis image;
-            title('object Fourier Transform');
-            drawnow;
+            if plotprogress
+                if plotobject, subplot(2,2,1), else subplot(1,2,1), end
+                imagesc(Images{i,j});
+                axis image;
+                title('sub-image');
+                if plotobject, subplot(2,2,2), else subplot(1,2,2), end
+                imagesc(log(abs(objectFT)));
+                axis image;
+                xlim([n_r/4, n_r*3/4]);
+                ylim([m_r/4, m_r*3/4]);
+                title('object Fourier Transform');
+                if plotobject
+                    object = fftshift(ifft2(ifftshift(objectFT)));
+                    subplot(2,2,3);
+                    imagesc(abs(object));
+                    axis image;
+                    title('Reconstructed object magnitude');
+                    subplot(2,2,4);
+                    imagesc(angle(object));
+                    axis image;
+                    title('Reconstructed object phase');
+                end % plotobject if
+                drawnow;
+             end % plotprogress if
         end % column for
     end % row for
 end % iteration for
