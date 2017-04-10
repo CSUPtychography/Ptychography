@@ -10,13 +10,6 @@ function object = reconstruct(filename, iterations)
     
     % process parameters
     min_overlap = 50;       % (%) overlap between adjacent sub-apertures
-    iterations = 5;         % number of iterations
-    % whether and what to display data at every step
-    % severely decreases performance
-    % plotprogress overrides plotobject
-    plotprogress = true;    % display data at every step if true
-    plotobject = true;      % plot object in addition to spectrum if true
-    filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
     
     %% import images and other data
     
@@ -129,12 +122,6 @@ function object = reconstruct(filename, iterations)
     % spectrum, and thus will not move around (relative to the sub-image).
     CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
     
-    % setup figure for plotting
-    figure(1);
-    subplot(1,2,1);
-    subplot(1,2,2);
-    colormap gray;
-    
     for iter = 1:iterations         % one per iteration
         for i = 1:arraysize         % one per row of LEDs
             for j = 1:arraysize     % one per column of LEDs
@@ -162,49 +149,10 @@ function object = reconstruct(filename, iterations)
                 % put it back
                 objectFT(ky_low:ky_high, kx_low:kx_high) = ...
                     piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
-                % display thingas
-                if plotprogress
-                    if plotobject, subplot(2,2,1), else subplot(1,2,1), end
-                    imagesc(Images{i,j});
-                    axis image;
-                    title('sub-image');
-                    if plotobject, subplot(2,2,2), else subplot(1,2,2), end
-                    imagesc(log(abs(objectFT)));
-                    axis image;
-                    xlim([n_r/4, n_r*3/4]);
-                    ylim([m_r/4, m_r*3/4]);
-                    title('object Fourier Transform');
-                    if plotobject
-                        object = fftshift(ifft2(ifftshift(objectFT)));
-                        subplot(2,2,3);
-                        imagesc(abs(object));
-                        axis image;
-                        title('Reconstructed object magnitude');
-                        subplot(2,2,4);
-                        imagesc(angle(object));
-                        axis image;
-                        title('Reconstructed object phase');
-                    end % plotobject if
-                    drawnow;
-                 end % plotprogress if
             end % column for
         end % row for
     end % iteration for
     
-    %% compute & display reconstructed object
-    
-    % compute
+    %% compute reconstructed object
     object = fftshift(ifft2(ifftshift(objectFT)));
-    % display
-    figure(1)
-    subplot(1,2,1);
-    imagesc(abs(object));
-    axis image;
-    title('Reconstructed Object Amplitude');
-    
-    subplot(1,2,2);
-    imagesc(angle(object));
-    axis image;
-    colormap gray;
-    title('Reconstructed Object Phase');
 end % function
