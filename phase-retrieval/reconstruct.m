@@ -33,27 +33,39 @@ import = load(filename);
 
 try
     version = import.version;
-catch ME
-    if strcmp(ME.identifier,'MATLAB:nonExistentField')
+catch Vexp
+    if strcmp(Vexp.identifier,'MATLAB:nonExistentField')
         cause = MException('MATLAB:reconstruct:noVersion', ...
             'File %s contains no version information', filename);
-        ME = ME.addCause(cause);
+        Vexp = Vexp.addCause(cause);
     end % identifier if
-    ME.rethrow;
+    Vexp.rethrow;
 end % version try/catch
 
 if version ~= 1
     error('This algorithm is incompatible with file version %d.', version);
 end % version if
 
-wavelength = import.wavelength;
-LED_spacing = import.LED_spacing;
-matrix_spacing = import.matrix_spacing;
-x_offset = import.x_offset;
-y_offset = import.y_offset;
-NA_obj = import.NA_obj;
-px_size = import.px_size;
-Images = import.Images;
+try
+    wavelength = import.wavelength;
+    LED_spacing = import.LED_spacing;
+    matrix_spacing = import.matrix_spacing;
+    x_offset = import.x_offset;
+    y_offset = import.y_offset;
+    NA_obj = import.NA_obj;
+    px_size = import.px_size;
+    Images = import.Images;
+catch Pexp
+    if strcmp(Pexp.identifier,'MATLAB:nonExistentField')
+        % find out which parameter is missing
+        indices = find(Pexp.message == '''');
+        missing_param = Pexp.message(indices(1)+1:indices(2)-1);
+        cause = MException('MATLAB:reconstruct:missingParam', ...
+            'File %s is missing the %s parameter', filename, missing_param);
+        Pexp = Pexp.addCause(cause);
+    end % identifier if
+    Pexp.rethrow;
+end % parameter try/catch
 
 [m_s,n_s] = size(Images{1});    % size of sub-images
 array_dimensions = size(Images);
