@@ -14,19 +14,6 @@ plotprogress = true;    % display data at every step if true
 plotobject = true;      % plot object in addition to spectrum if true
 filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
 
-% optical parameters
-% will be overwritten by data import
-wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
-LED_spacing = 5e-3;     % Distance between LEDs in meters
-matrix_spacing = 70e-3; % Distance from matrix to sample in meters
-x_offset = 0;           % Distance from center of matrix to optic axis
-y_offset = 0;           % (in meters)
-arraysize = 15;         % Number of LEDs in one side of the square
-No_LEDs = arraysize^2;  % Total number of LEDs (should probably be square)
-NA_obj = 0.08;          % Numerical aperture of the objective
-px_size = 2.5e-6;       % Pixel spacing projected onto sample (in meters)
-
-
 %% import images and other data
 
 import = load(filename);
@@ -46,6 +33,7 @@ if version ~= 1
     error('This algorithm is incompatible with file version %d.', version);
 end % version if
 
+% optical parameters
 wavelength = import.wavelength;
 LED_spacing = import.LED_spacing;
 matrix_spacing = import.matrix_spacing;
