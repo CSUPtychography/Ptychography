@@ -13,6 +13,7 @@ iterations = 5;         % number of iterations
 plotprogress = true;    % display data at every step if true
 plotobject = true;      % plot object in addition to spectrum if true
 filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
+movie_filename = 'reconstruction_with_object';
 
 % optical parameters
 % will be overwritten by data import
@@ -136,10 +137,11 @@ objectFT = fftshift(fft2(ifftshift(object)));
 CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
 
 % setup figure for plotting
-figure(1);
+fig = figure(1);
 subplot(1,2,1);
 subplot(1,2,2);
 colormap gray;
+M = struct('cdata',{},'colormap',{});
 
 for iter = 1:iterations         % one per iteration
     for i = 1:arraysize         % one per row of LEDs
@@ -170,7 +172,7 @@ for iter = 1:iterations         % one per iteration
             % display thingas
             if plotprogress
                 if plotobject, subplot(2,2,1), else subplot(1,2,1), end
-                imagesc(Images{i,j});
+                imagesc(sqrt(Images{i,j}));
                 axis image;
                 title('sub-image');
                 if plotobject, subplot(2,2,2), else subplot(1,2,2), end
@@ -191,6 +193,7 @@ for iter = 1:iterations         % one per iteration
                     title('Reconstructed object phase');
                 end % plotobject if
                 drawnow;
+                M(end+1) = getframe(fig);
              end % plotprogress if
         end % column for
     end % row for
@@ -212,3 +215,15 @@ imagesc(angle(object));
 axis image;
 colormap gray;
 title('Reconstructed Object Phase');
+
+%% Process and save movie
+
+% replicate last frame to add a 'pause'
+M = [M,repmat(M(end),1,20)];
+
+% save movie
+vw = VideoWriter(movie_filename);
+vw.Quality = 90;
+open(vw)
+writeVideo(vw,M);
+close(vw)
