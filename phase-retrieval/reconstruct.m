@@ -141,6 +141,10 @@ fig = figure(1);
 subplot(1,2,1);
 subplot(1,2,2);
 colormap gray;
+% maximize
+fig.Units = 'Normalized';
+fig.OuterPosition = [0 0 1 1];
+
 M = struct('cdata',{},'colormap',{});
 
 for iter = 1:iterations         % one per iteration
