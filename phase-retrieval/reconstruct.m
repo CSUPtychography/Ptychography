@@ -1,4 +1,4 @@
-function object = reconstruct(filename, iterations)
+function object = reconstruct(directory, iterations)
 %reconstruct: perform fourier ptychographic phase-retrieval using the
 %images and data stored in the file <filename>.
 %    usage:  object = reconstruct(filename, iterations);
@@ -11,12 +11,12 @@ function object = reconstruct(filename, iterations)
     % process parameters
     min_overlap = 50;       % (%) overlap between adjacent sub-apertures
     
-    %% import images and other data
+    %% import parameters
     
-    import = load(filename);
+    params = load(fullfile(directory,'parameters'));
     
     try
-        version = import.version;
+        version = params.version;
     catch Vexp
         if strcmp(Vexp.identifier,'MATLAB:nonExistentField')
             cause = MException('MATLAB:reconstruct:noVersion', ...
@@ -26,21 +26,22 @@ function object = reconstruct(filename, iterations)
         Vexp.rethrow;
     end % version try/catch
     
-    if version ~= 1
+    if version ~= 2
         error('This algorithm is incompatible with file version %d.', ...
             version);
     end % version if
     
     % optical parameters
     try
-        wavelength = import.wavelength;
-        LED_spacing = import.LED_spacing;
-        matrix_spacing = import.matrix_spacing;
-        x_offset = import.x_offset;
-        y_offset = import.y_offset;
-        NA_obj = import.NA_obj;
-        px_size = import.px_size;
-        Images = import.Images;
+        wavelength = params.wavelength;
+        LED_spacing = params.LED_spacing;
+        matrix_spacing = params.matrix_spacing;
+        x_offset = params.x_offset;
+        y_offset = params.y_offset;
+        NA_obj = params.NA_obj;
+        px_size = params.px_size;
+        fileformat = params.fileformat;
+        array_dimensions = params.array_dimensions;
     catch Pexp
         if strcmp(Pexp.identifier,'MATLAB:nonExistentField')
             % find out which parameter is missing
@@ -53,8 +54,9 @@ function object = reconstruct(filename, iterations)
         Pexp.rethrow;
     end % parameter try/catch
     
-    [m_s,n_s] = size(Images{1});    % size of sub-images
-    array_dimensions = size(Images);
+    % import single image to get sub-image size
+    load(fullfile(directory,sprintf(fileformat,1,1)));
+    [m_s,n_s] = size(Image);    % size of sub-images
     
     % check if array is square
     if (array_dimensions(1) ~= array_dimensions(2))
@@ -153,7 +155,8 @@ function object = reconstruct(filename, iterations)
                 % may need a scale factor here due to size difference
                 piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
                 % Replace intensity
-                piece_replaced = sqrt(Images{i,j}) ...
+                load(fullfile(directory,sprintf(fileformat,i,j)));
+                piece_replaced = sqrt(Image) ...
                     .* exp(1i * angle(piece));
                 % FFT
                 % also a scale factor here
