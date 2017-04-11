@@ -48,7 +48,8 @@ function object = reconstruct(directory, iterations)
             indices = find(Pexp.message == '''');
             missing_param = Pexp.message(indices(1)+1:indices(2)-1);
             cause = MException('MATLAB:reconstruct:missingParam', ...
-                'File %s is missing the %s parameter', filename, missing_param);
+                'File %s is missing the %s parameter', ...
+                fullfile(directory,'parameters'), missing_param);
             Pexp = Pexp.addCause(cause);
         end % identifier if
         Pexp.rethrow;
