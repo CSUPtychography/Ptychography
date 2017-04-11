@@ -69,9 +69,6 @@ function object = reconstruct(directory, iterations)
     
     %% Calculated parameters
     
-    % recalculate LED number just in case
-    No_LEDs = arraysize^2;  % Total number of LEDs (should be square)
-    
     % position of the farthest LED
     LED_limit = LED_spacing * (arraysize - 1) / 2;
     LED_positions = -LED_limit:LED_spacing:LED_limit;   % LED position list
@@ -104,10 +101,6 @@ function object = reconstruct(directory, iterations)
     % and for objective
     kt_max_obj = k * NA_obj;
     
-    % calculate pixel size
-    sub_px_size = px_size;
-    rec_px_size = pi / kt_max_rec;
-    
     % calculate reconstructed image size
     m_r = ceil(m_s * kt_max_rec / kt_max_sub);
     n_r = ceil(n_s * kt_max_rec / kt_max_sub);
@@ -115,11 +108,7 @@ function object = reconstruct(directory, iterations)
     % spatial frequency axes for spectrums of images
     kx_axis_sub = linspace(-kt_max_sub,kt_max_sub,n_s);
     ky_axis_sub = linspace(-kt_max_sub,kt_max_sub,m_s);
-    kx_axis_rec = linspace(-kt_max_rec,kt_max_rec,n_r);
-    ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
     
-    % grid of spatial frequencies for each pixel of reconstructed spectrum
-    [kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
     % same for sub-image spectrum
     [kx_g_sub,ky_g_sub] = meshgrid(kx_axis_sub,ky_axis_sub);
     
