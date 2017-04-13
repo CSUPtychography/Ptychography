@@ -82,6 +82,13 @@ save(param_filename, 'version', 'fileformat', 'array_dimensions', ...
 Prev = takephoto(vid);
 % save Preview
 save(sprintf(previewfullformat,x,y), 'Prev');
+
+% Acquire dark frame
+serialpass(arduino,trigger);
+dark_frame = takephoto(vid);
+% save dark_frame
+save(fullfile(directory,'dark_frame'),'dark_frame');
+
 %light first led
 serialpass(arduino,trigger);
 %setup while loop variables
