@@ -131,9 +131,13 @@ for i = 1:arraysize
         % multiply transfer function by FFt'd image
         blurred = CTF .* region;
 %         imagesc(kx_axis_rec,ky_axis_rec,abs(blurred)); title('blurred');
+        % flip
+        blurred = flip(flip(blurred,2),1);
         % inverse fourier transform
         sub_image = fftshift(ifft2(ifftshift(blurred)));
 %         imagesc(abs(sub_image)); title('sub-image');
+        % flop
+        sub_image = flip(flip(sub_image,2),1);
         % measure intensity
         sub_image = abs(sub_image).^2;
         % store in cell array
@@ -158,7 +162,7 @@ end % kx for
 % w: indicates weak phase
 % 50: phase factor in 100ths if weak phase used
 
-filename = sprintf('mock_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
+filename = sprintf('mockff_%c%c_%.0fx%.0f_%.0f_%.0f_%d_%.0f_%.0f', ...
     magnitude_file(1), phase_file(1), m_r/100, n_r/100, ...
     LED_spacing*1e3, matrix_spacing*1e2, arraysize, ...
     wavelength*1e7, NA_obj*100);
