@@ -4,10 +4,10 @@
 
 %% parameters
 magnitude_file = 'cameraman.png';
-phase_file = 'lena.png';
+phase_file = 'westconcordorthophoto.png';
 
 weak_phase = true;
-weak_phase_factor = 0.5;
+weak_phase_factor = 0.25;
 
 % optical parameters
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
@@ -27,7 +27,7 @@ oversampling_factor = 1.5;  % how much over Nyquist to sample
 % Import and normalize image data
 
 mag = normgray(imread(magnitude_file));
-phase = normgray(imread(phase_file));
+phase = normgray(imresize(imread(phase_file),size(mag)));
 
 % check size
 if size(mag) ~= size(phase)
