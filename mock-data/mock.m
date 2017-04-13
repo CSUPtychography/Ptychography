@@ -11,14 +11,14 @@ weak_phase_factor = 0.5;
 
 % optical parameters
 wavelength = 600e-9;    % wavelength in meters (different for R,G,B)
-LED_spacing = 5e-3;     % LED spacing in meters
-matrix_spacing = 70e-3; % distance from matrix to sample in meters
-x_offset = 0;           % distance from center of matrix to optic axis
-y_offset = 0;           % (in meters)
+LED_spacing = 4e-3;     % LED spacing in meters
+matrix_spacing = 65e-3; % distance from matrix to sample in meters
+x_offset = -150e-6;     % distance from center of matrix to optic axis
+y_offset = 500e-6;      % (in meters)
 arraysize = 15;         % size of one side of the square of LEDs
 No_LEDs = arraysize^2;  % Number of LEDs (should probably be square)
 
-NA_obj = 0.08;          % numerical aperture of the objective
+NA_obj = 0.12;          % numerical aperture of the objective
 min_overlap = 50;       % (%) minimum overlap between adjacent subimages 
 oversampling_factor = 1.5;  % how much over Nyquist to sample
 
