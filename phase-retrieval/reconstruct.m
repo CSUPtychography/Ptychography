@@ -68,6 +68,9 @@ function object = reconstruct(directory, iterations)
     end % array dimension if
     
     %% Calculated parameters
+
+    % number of LEDs
+    No_LEDs = arraysize^2;
     
     % position of the farthest LED
     LED_limit = LED_spacing * (arraysize - 1) / 2;
@@ -111,7 +114,7 @@ function object = reconstruct(directory, iterations)
     
     % same for sub-image spectrum
     [kx_g_sub,ky_g_sub] = meshgrid(kx_axis_sub,ky_axis_sub);
-    
+
     %% retrieve phase iteratively
     
     % initialize object
@@ -125,6 +128,12 @@ function object = reconstruct(directory, iterations)
     % sub-images after they are extracted from the reconstructed image
     % spectrum, and thus will not move around (relative to the sub-image).
     CTF = ((kx_g_sub.^2 + ky_g_sub.^2) < kt_max_obj^2);
+
+    steps = No_LEDs * iterations;   % number of steps
+    step = 0;                       % initialize step counter
+    iter = 0;                       % initialize iteration counter
+    wait_format = 'Iteration %d of %d';
+    h = waitbar(0,sprintf(wait_format,iter,iterations));
     
     for iter = 1:iterations         % one per iteration
         for i = 1:arraysize         % one per row of LEDs
@@ -154,8 +163,12 @@ function object = reconstruct(directory, iterations)
                 % put it back
                 objectFT(ky_low:ky_high, kx_low:kx_high) = ...
                     piece_replacedFT .* CTF + pieceFT .* (1 - CTF);
+
+                step = step + 1;
+                waitbar(step/steps,h);
             end % column for
         end % row for
+        waitbar(step/steps,h,sprintf(wait_format,iter,iterations));
     end % iteration for
     
     %% compute reconstructed object
