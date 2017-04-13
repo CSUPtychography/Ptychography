@@ -74,7 +74,8 @@ previewfullformat = strcat(directory, '/', previewfileformat);
 % save parameters in directory
 param_filename = strcat(directory, '/parameters');
 version = 2;
-save(param_filename, 'version', 'fileformat', ...
+array_dimensions = [ymax xmax];
+save(param_filename, 'version', 'fileformat', 'array_dimensions', ...
     'LED_spacing', 'matrix_spacing', 'x_offset', 'y_offset', ...
     'wavelength', 'NA_obj', 'px_size');
 %Create Preview Image to Compare reconstruction to
