@@ -12,13 +12,15 @@ and phase retrieval algorithm for a senior design project
 
 ### To Do: ###
 
- * Generate mock data
- * develop phase retrieval algorithm
+ * ~~Generate mock data~~
+ * ~~develop phase retrieval algorithm~~
  * ~~Control LED matrix~~
- * Add LED matrix control code to repository
- * Optimize Phase retrieval
- * Interface with camera
- * Interface with arduino
+ * ~~Add LED matrix control code to repository~~
+ * ~~Optimize Phase retrieval~~
+ * ~~Interface with camera~~
+ * ~~Interface with arduino~~
+ * Adapt algorithm to new saving scheme
+ * Automate color image acquisition (maybe)
 
 # Getting Started with Git #
 
