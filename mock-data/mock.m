@@ -103,6 +103,8 @@ ky_axis_rec = linspace(-kt_max_rec,kt_max_rec,m_r);
 
 % grid of spatial frequencies for each pixel of reconstructed spectrum
 [kx_g_rec,ky_g_rec] = meshgrid(kx_axis_rec,ky_axis_rec);
+% same for subimage spectrum
+[kx_g_sub,ky_g_sub] = meshgrid(kx_axis_sub,ky_axis_sub);
 
 %% sub image construction
 
