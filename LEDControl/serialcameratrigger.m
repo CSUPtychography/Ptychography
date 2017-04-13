@@ -101,9 +101,10 @@ while(k<=x)
     j = 1;
     ImageArrayY = 1;
     while(j<=y) 
-       Image = takephoto(vid);
+       Image = takephoto(vid) - dark_frame;
        imagesc(Image);
        colormap gray;
+       axis image;
        % save image for memory conservation
        save(sprintf(fullformat,ImageArrayX,ImageArrayY), 'Image');
        %step variables
