@@ -33,15 +33,17 @@ void setup() {
     a = Serial.read();
   }
   matrix.drawPixel(centerx,centery,matrix.Color333(0, 0, 7));
-  
+  while(dark=0){
   if (Serial.available() > 0)
   {
     matCOM = Serial.read();
     if (matCOM == '1')
     {
       matrix.fillRect(xstart, ystart, xmax, ymax, matrix.Color333(0, 0, 0));
+    dark = 1
     }
   }
+}
 }
 
 // the loop routine runs over and over again until satisfied:
