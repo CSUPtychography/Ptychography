@@ -7,9 +7,10 @@ oldfullformat = strcat(newdirectory,'/',oldfileformat);
 newfullformat = strcat(newdirectory,'/',newfileformat);
 for i = 1:15
     for j = 1:15
-prefiltered = load(fullfile(directory,sprintf(newfileformat,i,j)));
+load(fullfile(directory,sprintf(oldfileformat,i,j)));
+prefiltered = Image;
 postfiltered = medfilt2(prefiltered);
-save(sprintf(newfullformat,ImageArrayX,ImageArrayY),'postfiltered');
+save(sprintf(newfullformat,i,j),'postfiltered');
 figure(1)
 subplot(1,2,1)
 imagesc(prefiltered)
