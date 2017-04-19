@@ -85,6 +85,10 @@ save(sprintf(previewfullformat,x,y), 'Prev');
 
 % Acquire dark frame
 serialpass(arduino,trigger);
+preview(vid);
+mbox_dark = msgbox('Dark Field looks ...good?...','DarkField');
+uiwait(mbox_dark);
+closepreview(vid);
 dark_frame = takephoto(vid);
 % save dark_frame
 save(fullfile(directory,'dark_frame'),'dark_frame');
@@ -100,8 +104,8 @@ n = x*y;
 while(k<=x)
     j = 1;
     ImageArrayY = 1;
-    while(j<=y) 
-       Image = takephoto(vid) - dark_frame;
+    while(j<=y)
+       Image = takephoto(vid) - .5*dark_frame;
        imagesc(Image);
        colormap gray;
        axis image;
@@ -112,7 +116,7 @@ while(k<=x)
        j = j + 1;
        %light next LED, pause for autoexposure
        serialpass(arduino,trigger);
-       pause(.2)
+       pause(2);
     end
     ImageArrayX = ImageArrayX + 1;
     k = k + 1;
