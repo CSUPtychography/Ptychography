@@ -16,7 +16,6 @@ function object = reconstruct(filename, iterations)
     % plotprogress overrides plotobject
     plotprogress = true;    % display data at every step if true
     plotobject = true;      % plot object in addition to spectrum if true
-    filename = '../mock-data/mock_cl_3x3_5_7_15_6_8_w50';
     
     %% import images and other data
     
