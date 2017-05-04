@@ -19,5 +19,5 @@ function normalized = normgray(image)
     elseif dimension ~= 2
         error('normgray: input image must be 2- or 3-dimensional');
     end % dimension if
-    
+
 end % function
