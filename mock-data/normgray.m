@@ -12,7 +12,7 @@ function normalized = normgray(image)
     end % integer if
 
     % squeeze and convert to B&W
-    dimension = length(size(image));
+    dimension = ndims(image);
     if dimension == 3
         % convert to black & white using lightness algorithm
         image = (min(image,[],3) + max(image,[],3)) / 2;
