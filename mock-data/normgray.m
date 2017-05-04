@@ -4,6 +4,13 @@ function normalized = normgray(image)
 %    input:  2- or 3-dimensional matrix
 %    output: normalized 2-dimensional matrix
 
+    % convert to float and normalize to between 0 and 1
+    if isinteger(image)
+        image = double(image) / double(intmax(class(image)));
+    else
+        image = double(image);
+    end % integer if
+
     % squeeze and convert to B&W
     dimension = length(size(image));
     if dimension == 3
@@ -12,11 +19,5 @@ function normalized = normgray(image)
     elseif dimension ~= 2
         error('normgray: input image must be 2- or 3-dimensional');
     end % dimension if
-    
-    % normalize
-    image = double(image);
-    minimum = min(image(:));
-    maximum = max(image(:));
-    normalized = (image - minimum) / (maximum - minimum);
     
 end % function
