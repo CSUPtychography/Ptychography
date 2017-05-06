@@ -1,10 +1,13 @@
-function object = reconstruct(directory, iterations)
-%reconstruct: perform fourier ptychographic phase-retrieval using the
-%images and data stored in the file <filename>.
-%    usage:  object = reconstruct(filename, iterations);
-%    input:  filename:   the name of the file containing the data to use
-%            iterations: the number of iterations to perform
-%    output: the reconstructed object
+function object = reconstruct(fileordir, iterations)
+reconstruct: perform fourier ptychographic phase-retrieval using the
+images and data stored in the file <filename>.
+    usage:  object = reconstruct(filename, iterations);
+    input:  fileordir:  the name of the file or directory containing
+                the data to use.  If the data is stored in a single
+                file, use that file's name.  If it is stored in many
+                files in one directory, use the name of the directory.
+            iterations: the number of iterations to perform
+    output: the reconstructed object
 
     %% Parameters and constants
     
@@ -13,7 +16,14 @@ function object = reconstruct(directory, iterations)
     
     %% import parameters
     
-    params = load(fullfile(directory,'parameters'));
+    if isdir(fileordir)
+        paramfile = fullfile(fileordir,'parameters');
+        directory = fileordir;
+    else
+        paramfile = fileordir;
+    end %dir if
+
+    params = load(paramfile);
     
     try
         version = params.version;
@@ -26,10 +36,49 @@ function object = reconstruct(directory, iterations)
         Vexp.rethrow;
     end % version try/catch
     
-    if version ~= 2
-        error('This algorithm is incompatible with file version %d.', ...
-            version);
-    end % version if
+    switch version 
+        case 1
+            try
+                Images = params.Images;
+            catch Pexp
+                if strcmp(Pexp.identifier,'MATLAB:nonExistentField')
+                    % find out which parameter is missing
+                    indices = find(Pexp.message == '''');
+                    missing_param = Pexp.message(indices(1)+1:indices(2)-1);
+                    cause = MException('MATLAB:reconstruct:missingParam', ...
+                        'File %s is missing the %s parameter', ...
+                        fullfile(directory,'parameters'), missing_param);
+                    Pexp = Pexp.addCause(cause);
+                end % identifier if
+                Pexp.rethrow;
+            end % parameter try/catch
+            [m_s,n_s] = size(Images{1});    % size of sub-images
+            array_dimensions = size(Images);
+            image_array = true;
+        case 2
+            try
+                fileformat = params.fileformat;
+                array_dimensions = params.array_dimensions;
+            catch Pexp
+                if strcmp(Pexp.identifier,'MATLAB:nonExistentField')
+                    % find out which parameter is missing
+                    indices = find(Pexp.message == '''');
+                    missing_param = Pexp.message(indices(1)+1:indices(2)-1);
+                    cause = MException('MATLAB:reconstruct:missingParam', ...
+                        'File %s is missing the %s parameter', ...
+                        fullfile(directory,'parameters'), missing_param);
+                    Pexp = Pexp.addCause(cause);
+                end % identifier if
+                Pexp.rethrow;
+            end % parameter try/catch
+            % import single image to get sub-image size
+            load(fullfile(directory,sprintf(fileformat,1,1)));
+            [m_s,n_s] = size(Image);    % size of sub-images
+            image_array = false;
+        otherwise
+            error('This algorithm is incompatible with file version %d.', ...
+                version);
+    end % version switch
     
     % optical parameters
     try
@@ -40,8 +89,6 @@ function object = reconstruct(directory, iterations)
         y_offset = params.y_offset;
         NA_obj = params.NA_obj;
         px_size = params.px_size;
-        fileformat = params.fileformat;
-        array_dimensions = params.array_dimensions;
     catch Pexp
         if strcmp(Pexp.identifier,'MATLAB:nonExistentField')
             % find out which parameter is missing
@@ -54,10 +101,6 @@ function object = reconstruct(directory, iterations)
         end % identifier if
         Pexp.rethrow;
     end % parameter try/catch
-    
-    % import single image to get sub-image size
-    load(fullfile(directory,sprintf(fileformat,1,1)));
-    [m_s,n_s] = size(Image);    % size of sub-images
     
     % check if array is square
     if (array_dimensions(1) ~= array_dimensions(2))
@@ -145,9 +188,14 @@ function object = reconstruct(directory, iterations)
                 % may need a scale factor here due to size difference
                 piece = fftshift(ifft2(ifftshift(pieceFT_constrained)));
                 % Replace intensity
-                load(fullfile(directory,sprintf(fileformat,i,j)));
-                piece_replaced = sqrt(Image) ...
-                    .* exp(1i * angle(piece));
+                if image_array
+                    piece_replaced = sqrt(Images{i,j}) ...
+                        .* exp(1i * angle(piece));
+                else
+                    load(fullfile(directory,sprintf(fileformat,i,j)));
+                    piece_replaced = sqrt(Image) ...
+                        .* exp(1i * angle(piece));
+                end % image array if
                 % FFT
                 % also a scale factor here
                 piece_replacedFT=fftshift(fft2(ifftshift(piece_replaced)));
