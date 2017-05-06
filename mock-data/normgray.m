@@ -6,16 +6,16 @@ function normalized = normgray(image)
 
     % convert to float and normalize to between 0 and 1
     if isinteger(image)
-        image = double(image) / double(intmax(class(image)));
+        normalized = double(image) / double(intmax(class(image)));
     else
-        image = double(image);
+        normalized = double(image);
     end % integer if
 
     % squeeze and convert to B&W
-    dimension = ndims(image);
+    dimension = ndims(normalized);
     if dimension == 3
         % convert to black & white using lightness algorithm
-        image = (min(image,[],3) + max(image,[],3)) / 2;
+        normalized = (min(normalized,[],3) + max(normalized,[],3)) / 2;
     elseif dimension ~= 2
         error('normgray: input image must be 2- or 3-dimensional');
     end % dimension if
