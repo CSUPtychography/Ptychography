@@ -1,13 +1,13 @@
 function object = reconstruct(fileordir, iterations)
-reconstruct: perform fourier ptychographic phase-retrieval using the
-images and data stored in the file <filename>.
-    usage:  object = reconstruct(filename, iterations);
-    input:  fileordir:  the name of the file or directory containing
-                the data to use.  If the data is stored in a single
-                file, use that file's name.  If it is stored in many
-                files in one directory, use the name of the directory.
-            iterations: the number of iterations to perform
-    output: the reconstructed object
+%reconstruct: perform fourier ptychographic phase-retrieval using the
+%images and data stored in the file <filename>.
+%    usage:  object = reconstruct(filename, iterations);
+%    input:  fileordir:  the name of the file or directory containing
+%                the data to use.  If the data is stored in a single
+%                file, use that file's name.  If it is stored in many
+%                files in one directory, use the name of the directory.
+%            iterations: the number of iterations to perform
+%    output: the reconstructed object
 
     %% Parameters and constants
     
