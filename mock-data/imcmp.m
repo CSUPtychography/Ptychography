@@ -1,4 +1,4 @@
-function similarity = imcmp(image,original);
+function similarity = imcmp(image,original)
 %imcmp: compare two images irrespective of size, scale, or offset using
 %        the Pearson correlation coefficient
 %    inputs: image:      The image to compare
