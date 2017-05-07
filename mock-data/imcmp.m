@@ -16,7 +16,7 @@ function similarity = imcmp(image,original);
     im_std = std(image);
     orig_std = std(original);
 
-    covariance = mean(image.*original) - im_mean*orig_mean;
+    covariance = abs(mean(image.*original) - im_mean*orig_mean);
 
     similarity = covariance / im_std / orig_std;
 
